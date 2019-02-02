@@ -19,6 +19,7 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 		int GetIntNumber();
 		void SetDoubleNumber(double doubleNumber);
 		double GetDoubleNumber();
+		void InitStringData(int size);
 		void SetStringData(char* stringData);
 		char* GetStringData();
 		void InitDoubleArray(int size);
@@ -39,6 +40,8 @@ extern "C" void SetDoubleNumber(MultiCharts* multiCharts, double doubleNumber);
 extern "C" void SetStringData(MultiCharts* multiCharts, char* stringData);
 
 extern "C" char* GetStringData(MultiCharts* multiCharts);
+
+extern "C" void InitStringData(MultiCharts* multiCharts, int size);
 
 extern "C" void SetDoubleArray(MultiCharts* multiCharts, double* doubleArray);
 
