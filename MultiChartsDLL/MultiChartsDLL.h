@@ -1,5 +1,4 @@
 #pragma once
-#include "string"
 
 #ifdef MULTICHARTSDLL_EXPORTS
 	#define MULTICHARTSMACRO __declspec(dllexport)
@@ -7,13 +6,11 @@
 	#define MULTICHARTSMACRO __declspec(dllimport)
 #endif
 
-template class MULTICHARTSMACRO std::basic_string<char>;
-
 extern "C" class MULTICHARTSMACRO MultiCharts
 {
 	int intNumber;
-	double doubleNumber;
-	std::string stringData;
+	double doubleNumber;	
+	char* stringData;
 	double* doubleArray;
 	public:
 		MultiCharts();
@@ -22,8 +19,9 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 		int GetIntNumber();
 		void SetDoubleNumber(double doubleNumber);
 		double GetDoubleNumber();
-		void SetStringData(std::string stringData);
-		std::string GetStringData();
+		void InitStringData(int size);
+		void SetStringData(char* stringData);
+		char* GetStringData();
 		void InitDoubleArray(int size);
 		void SetDoubleArray(double* doubleArray);
 		double* GetDoubleArray();
@@ -39,9 +37,11 @@ extern "C" int GetIntNumber(MultiCharts* multiCharts);
 
 extern "C" void SetDoubleNumber(MultiCharts* multiCharts, double doubleNumber);
 
-extern "C" void SetStringData(MultiCharts* multiCharts, std::string stringData);
+extern "C" void SetStringData(MultiCharts* multiCharts, char* stringData);
 
-std::string GetStringData(MultiCharts* multiCharts);
+extern "C" char* GetStringData(MultiCharts* multiCharts);
+
+extern "C" void InitStringData(MultiCharts* multiCharts, int size);
 
 extern "C" void SetDoubleArray(MultiCharts* multiCharts, double* doubleArray);
 
