@@ -25,7 +25,7 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 		void InitDoubleArray(int size);
 		void SetDoubleArray(double* doubleArray);
 		double* GetDoubleArray();
-		char* PrintText();
+		long GetNumber();
 };
 
 extern "C" MultiCharts* CreateMultiCharts();
@@ -50,4 +50,4 @@ extern "C" double* GetDoubleArray(MultiCharts* multiCharts);
 
 extern "C" void InitDoubleArray(MultiCharts* multiCharts, int size);
 
-extern "C" char* PrintText(MultiCharts* multiCharts);
+extern "C" long GetNumber(MultiCharts* multiCharts);

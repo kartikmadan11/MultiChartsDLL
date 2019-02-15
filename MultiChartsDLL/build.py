@@ -1,8 +1,4 @@
-#importing libraries and tools
-
-import numpy as np
-import pandas as pd
-import tensorflow as tf
-
-def print_text():
-    return "helloworld"
+def getInteger():
+    print('Python function called')
+    c = 101
+    return c
