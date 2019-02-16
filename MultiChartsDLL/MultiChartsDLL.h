@@ -9,23 +9,26 @@
 extern "C" class MULTICHARTSMACRO MultiCharts
 {
 	int intNumber;
-	double doubleNumber;	
+	double doubleNumber;
 	char* stringData;
 	double* doubleArray;
-	public:
-		MultiCharts();
-		~MultiCharts();
-		void SetIntNumber(int intNumber);
-		int GetIntNumber();
-		void SetDoubleNumber(double doubleNumber);
-		double GetDoubleNumber();
-		void InitStringData(int size);
-		void SetStringData(char* stringData);
-		char* GetStringData();
-		void InitDoubleArray(int size);
-		void SetDoubleArray(double* doubleArray);
-		double* GetDoubleArray();
-		long GetNumber();
+	char* pythonStringData;
+public:
+	MultiCharts();
+	~MultiCharts();
+	void SetIntNumber(int intNumber);
+	int GetIntNumber();
+	void SetDoubleNumber(double doubleNumber);
+	double GetDoubleNumber();
+	void InitStringData(int size);
+	void SetStringData(char* stringData);
+	char* GetStringData();
+	void InitDoubleArray(int size);
+	void SetDoubleArray(double* doubleArray);
+	double* GetDoubleArray();
+	void InitPythonStringData(int size);
+	void SetPythonStringData(char* pythonStringData);
+	char* GetPythonStringData();
 };
 
 extern "C" MultiCharts* CreateMultiCharts();
@@ -50,4 +53,8 @@ extern "C" double* GetDoubleArray(MultiCharts* multiCharts);
 
 extern "C" void InitDoubleArray(MultiCharts* multiCharts, int size);
 
-extern "C" long GetNumber(MultiCharts* multiCharts);
+extern "C" void InitPythonStringData(MultiCharts* multiCharts, int size);
+
+extern "C" void SetPythonStringData(MultiCharts* multiCharts, char* pythonStringData);
+
+extern "C" char* GetPythonStringData(MultiCharts* multiCharts);
