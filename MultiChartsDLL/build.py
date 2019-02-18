@@ -1,0 +1,2 @@
+def getRandomText():
+    return "ABCD"
