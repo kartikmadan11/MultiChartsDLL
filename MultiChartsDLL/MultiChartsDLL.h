@@ -13,22 +13,61 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 	char* stringData;
 	double* doubleArray;
 	char* pythonStringData;
-public:
-	MultiCharts();
-	~MultiCharts();
-	void SetIntNumber(int intNumber);
-	int GetIntNumber();
-	void SetDoubleNumber(double doubleNumber);
-	double GetDoubleNumber();
-	void InitStringData(int size);
-	void SetStringData(char* stringData);
-	char* GetStringData();
-	void InitDoubleArray(int size);
-	void SetDoubleArray(double* doubleArray);
-	double* GetDoubleArray();
-	void InitPythonStringData(int size);
-	void SetPythonStringData(char* pythonStringData);
-	char* GetPythonStringData();
+	
+	/*
+	DEPLOY
+	double* trainingData;
+	int trainingDataSize;
+
+	char (*dateArray)[DATE_SIZE];
+	int dateArraySize;
+
+	long* volumeArray;
+	int volumeArraySize;
+
+	char* fileName;
+	int fileNameSize;
+
+	double learningRate;
+	int epochs;
+	int scale;
+	*/
+
+	public:
+		MultiCharts();
+		~MultiCharts();
+		void SetIntNumber(int intNumber);
+		int GetIntNumber();
+		void SetDoubleNumber(double doubleNumber);
+		double GetDoubleNumber();
+		void InitStringData(int size);
+		void SetStringData(char* stringData);
+		char* GetStringData();
+		void InitDoubleArray(int size);
+		void SetDoubleArray(double* doubleArray);
+		double* GetDoubleArray();
+		void InitPythonStringData(int size);
+		void SetPythonStringData(char* pythonStringData);
+		char* GetPythonStringData();
+	
+		/*
+		void InitTrainingData(int size);
+		void SetTrainingData(double* trainingData);
+
+		void InitDateArray(int size);
+		void SetDateArray(char(*dateArray)[DATE_SIZE]);
+
+		void InitVolumeArray(int size);
+		void SetVolumeArray(long* volume);
+
+		void InitFileName(int size);
+		void SetFileName(char* fileName);
+
+		void SetLearningRate(double learningRate);
+		void SetEpochs(int epochs);
+		void SetScale(int scale);
+		*/
+	
 };
 
 extern "C" MultiCharts* CreateMultiCharts();
