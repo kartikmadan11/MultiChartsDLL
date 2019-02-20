@@ -23,8 +23,9 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 	int fileNameSize;
 	
 	double learningRate;
-	int epochs;
+	short epochs;
 	int scale;
+	short optimizer;
 
 	public:
 
@@ -44,8 +45,9 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 		void SetFileName(char* fileName);
 
 		void SetLearningRate(double learningRate);
-		void SetEpochs(int epochs);
+		void SetEpochs(short epochs);
 		void SetScale(int scale);
+		void SetOptimizer(short optimizer);
 };
 
 /*
@@ -68,5 +70,6 @@ extern "C" void InitFileName(MultiCharts* multiCharts, int size);
 extern "C" void SetFileName(MultiCharts* multiCharts, char* fileName);
 
 extern "C" void SetLearningRate(MultiCharts* multiCharts, double learningRate);
-extern "C" void SetEpochs(MultiCharts* multiCharts, int epochs);
+extern "C" void SetEpochs(MultiCharts* multiCharts, short epochs);
 extern "C" void SetScale(MultiCharts* multiCharts, int scale);
+extern "C" void SetOptimizer(MultiCharts* multiCharts, short optimizer);
