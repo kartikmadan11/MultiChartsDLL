@@ -90,3 +90,22 @@ extern "C" void InitDoubleArray(MultiCharts* multiCharts, int size);
 extern "C" void InitPythonStringData(MultiCharts* multiCharts, int size);
 extern "C" void SetPythonStringData(MultiCharts* multiCharts, char* pythonStringData);
 extern "C" char* GetPythonStringData(MultiCharts* multiCharts);
+
+/*
+extern "C" void InitTrainingData(MultiCharts* multiCharts, int size);
+extern "C" void SetTrainingData(MultiCharts* multiCharts, double* trainingData);
+
+extern "C" void InitDateArray(MultiCharts* multiCharts, int size);
+extern "C" void SetDateArray(MultiCharts* multiCharts, char(*dateArray)[DATE_SIZE]);
+
+extern "C" void InitVolumeArray(MultiCharts* multiCharts, int size);
+extern "C" void SetVolumeArray(MultiCharts* multiCharts, long* volumeArray);
+
+extern "C" void InitFileName(MultiCharts* multiCharts, int size);
+extern "C" void SetFileName(MultiCharts* multiCharts, char* fileName);
+
+extern "C" void SetLearningRate(MultiCharts* multiCharts, double learningRate);
+extern "C" void SetEpochs(MultiCharts* multiCharts, short epochs);
+extern "C" void SetScale(MultiCharts* multiCharts, int scale);
+extern "C" void SetOptimizer(MultiCharts* multiCharts, short optimizer);
+*/
