@@ -48,6 +48,8 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 		void SetEpochs(short epochs);
 		void SetScale(int scale);
 		void SetOptimizer(short optimizer);
+
+		void TrainModel();
 };
 
 /*
