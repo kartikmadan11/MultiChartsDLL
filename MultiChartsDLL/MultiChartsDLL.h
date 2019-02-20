@@ -12,12 +12,16 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 {
 	double* trainingData;
 	int trainingDataSize;
+
 	char (*dateArray)[DATE_SIZE];
 	int dateArraySize;
+	
 	long* volumeArray;
 	int volumeArraySize;
+	
 	char* fileName;
 	int fileNameSize;
+	
 	double learningRate;
 	int epochs;
 	long scale;
