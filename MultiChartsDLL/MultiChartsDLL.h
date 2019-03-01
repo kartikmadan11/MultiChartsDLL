@@ -50,7 +50,7 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 		void SetScale(int scale);
 		void SetOptimizer(short optimizer);
 
-		void TrainModel();
+		double TrainModel();
 };
 
 /*
@@ -76,3 +76,5 @@ extern "C" void SetLearningRate(MultiCharts* multiCharts, double learningRate);
 extern "C" void SetEpochs(MultiCharts* multiCharts, short epochs);
 extern "C" void SetScale(MultiCharts* multiCharts, int scale);
 extern "C" void SetOptimizer(MultiCharts* multiCharts, short optimizer);
+
+extern "C" double TrainModel(MultiCharts* multiCharts);
