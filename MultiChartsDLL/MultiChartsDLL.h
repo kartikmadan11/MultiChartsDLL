@@ -28,16 +28,16 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 	short optimizer;
 
 	public:
-
+  
 		MultiCharts();
 		~MultiCharts();
 	
 		void InitTrainingData(int size);
 		void SetTrainingData(double* trainingData);
-	
+
 		void InitDateArray(int size);
-		void SetDateArray(char (*dateArray)[DATE_SIZE]);
-	
+		void SetDateArray(char(*dateArray)[DATE_SIZE]);
+
 		void InitVolumeArray(int size);
 		void SetVolumeArray(long* volume);
 
@@ -63,7 +63,7 @@ extern "C" void InitTrainingData(MultiCharts* multiCharts, int size);
 extern "C" void SetTrainingData(MultiCharts* multiCharts, double* trainingData);
 
 extern "C" void InitDateArray(MultiCharts* multiCharts, int size);
-extern "C" void SetDateArray(MultiCharts* multiCharts, char (*dateArray)[DATE_SIZE]);
+extern "C" void SetDateArray(MultiCharts* multiCharts, char(*dateArray)[DATE_SIZE]);
 
 extern "C" void InitVolumeArray(MultiCharts* multiCharts, int size);
 extern "C" void SetVolumeArray(MultiCharts* multiCharts, long* volumeArray);

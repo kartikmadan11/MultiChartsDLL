@@ -4,7 +4,7 @@
 # ## MultiChartsBuild
 # Python API to be called from C++ DLL
 
-# In[84]:
+# In[1]:
 
 
 # Importing the libraries
@@ -24,7 +24,7 @@ import plotly.plotly as py
 import plotly
 
 
-# In[2]:
+# In[128]:
 
 
 # Some functions to help out with
@@ -42,7 +42,7 @@ def return_rmse(test,predicted):
     print("The root mean squared error is {}.".format(rmse))
 
 
-# In[8]:
+# In[95]:
 
 
 # Inputting dummy data
@@ -50,26 +50,27 @@ dataset = pd.read_csv('input/IBM_2006-01-01_to_2018-01-01.csv', index_col='Date'
 dataset.head()
 
 
-# In[9]:
+# In[120]:
 
 
 # Checking for missing values
-training_set = dataset[:'2016'].iloc[:,1:2].values
-test_set = dataset['2017':].iloc[:,1:2].values
+training_set = dataset[:'2016'].iloc[:,3:4].values
+test_set = dataset['2017':].iloc[:,3:4].values
+training_set
 
 
-# In[10]:
+# In[121]:
 
 
-# 'High' attribute for prices
-dataset["High"][:'2016'].plot(figsize=(16,4),legend=True)
-dataset["High"]['2017':].plot(figsize=(16,4),legend=True)
+# 'Close' attribute for prices
+dataset["Close"][:'2016'].plot(figsize=(16,4),legend=True)
+dataset["Close"]['2017':].plot(figsize=(16,4),legend=True)
 plt.legend(['Training set (Before 2017)','Test set (2017 and beyond)'])
 plt.title('IBM stock price')
 plt.show()
 
 
-# In[11]:
+# In[122]:
 
 
 # Scaling the training set
@@ -77,7 +78,7 @@ sc = MinMaxScaler(feature_range=(0,1))
 training_set_scaled = sc.fit_transform(training_set)
 
 
-# In[12]:
+# In[123]:
 
 
 # creating a data structure with 60 timesteps and 1 output
@@ -90,7 +91,7 @@ for i in range(60,2769):
 X_train, y_train = np.array(X_train), np.array(y_train)
 
 
-# In[13]:
+# In[124]:
 
 
 # Reshaping X_train for efficient modelling
@@ -100,7 +101,7 @@ X_train = np.reshape(X_train, (X_train.shape[0],X_train.shape[1],1))
 # ## LSTM Model
 # Training the data with a basic Long Short Term Memory RNN to avoid VG
 
-# In[14]:
+# In[129]:
 
 
 # The LSTM architecture
@@ -126,19 +127,17 @@ regressor.compile(optimizer='rmsprop',loss='mean_squared_error')
 regressor.fit(X_train,y_train,epochs=50,batch_size=32)
 
 
-# In[27]:
+# In[134]:
 
 
 # Now to get the test set ready in a similar way as the training set.
-# The following has been done so first 60 entires of test set have 60 previous values which is impossible to get unless we take the whole 
-# 'High' attribute data for processing
-dataset_total = pd.concat((dataset["High"][:'2016'],dataset["High"]['2017':]),axis=0)
+dataset_total = pd.concat((dataset["Close"][:'2016'],dataset["Close"]['2017':]),axis=0)
 inputs = dataset_total[len(dataset_total)-len(test_set) - 60:].values
 inputs = inputs.reshape(-1,1)
 inputs  = sc.transform(inputs)
 
 
-# In[28]:
+# In[135]:
 
 
 # Preparing X_test and predicting the prices
@@ -151,14 +150,14 @@ predicted_stock_price = regressor.predict(X_test)
 predicted_stock_price = sc.inverse_transform(predicted_stock_price)
 
 
-# In[29]:
+# In[136]:
 
 
 # Visualizing the results for LSTM
 plot_predictions(test_set,predicted_stock_price)
 
 
-# In[25]:
+# In[137]:
 
 
 # Evaluating our model
@@ -168,7 +167,7 @@ return_rmse(test_set,predicted_stock_price)
 # ## Gated Recurrent Units RNN
 # Faster but poor results
 
-# In[26]:
+# In[106]:
 
 
 # The GRU architecture
@@ -193,9 +192,7 @@ regressorGRU.compile(optimizer=SGD(lr=0.01, decay=1e-7, momentum=0.9, nesterov=F
 regressorGRU.fit(X_train,y_train,epochs=50,batch_size=150)
 
 
-# The current version version uses a dense GRU network with 100 units as opposed to the GRU network with 50 units in previous version
-
-# In[30]:
+# In[ ]:
 
 
 # Preparing X_test and predicting the prices
@@ -208,7 +205,7 @@ GRU_predicted_stock_price = regressorGRU.predict(X_test)
 GRU_predicted_stock_price = sc.inverse_transform(GRU_predicted_stock_price)
 
 
-# In[31]:
+# In[ ]:
 
 
 # Visualizing the results for GRU
@@ -281,10 +278,16 @@ return_rmse(test_set,bidirection_predicted_stock_price)
 # ## OHLC Chart
 # A plotly tool for plotting ohlc values
 
+# In[6]:
+
+
+plotly_api_key = open('plotly_api.txt', 'r')
+
+
 # In[88]:
 
 
-plotly.tools.set_credentials_file(username='magiciankartik', api_key='HgbPgF1OwxRcj71GuPix')
+plotly.tools.set_credentials_file(username='magiciankartik', api_key='plotly_api_key')
 
 
 # In[92]:

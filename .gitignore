@@ -259,3 +259,6 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+MultiChartsDLL/MultiChartsDLL.vcxproj
+*.vcxproj
+MultiChartsDLL/python-build/plotly_api.txt
