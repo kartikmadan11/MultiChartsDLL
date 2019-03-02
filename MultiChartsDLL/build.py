@@ -1,9 +1,15 @@
 def getRandomText():
-    return "ABCD"
+    return "AB12"
 
 def train(li):
     if(type(li) == list):
-        [e+5 for e in li]
-        return "done"
+        li = [e+5 for e in li]
+        return sum(li)
     else:
-        return "fail"
+        return sum(li)
+
+def getString(str):
+    if str == 'Kartik':
+        return 100
+    else:
+        return 0

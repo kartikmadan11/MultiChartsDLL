@@ -1,2 +1,2 @@
-def getRandomText():
-    return "ABCD"
+def train(li):
+    return str(sum(li))
