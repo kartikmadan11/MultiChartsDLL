@@ -116,20 +116,19 @@ double MultiCharts::TrainModel()
 		CPyObject pFunc = PyObject_GetAttrString(pModule, "train");
 		if (pFunc && PyCallable_Check(pFunc))
 		{
-			CPyObject pList = PyList_New(0);
+			CPyObject pTrainingData = PyList_New(0);
+			CPyObject pDate = PyList_New(0);
 			for (int i = 0; i < trainingDataSize; i++)
 			{
-				PyList_Append(pList, PyFloat_FromDouble(trainingData[i]));
+				PyList_Append(pTrainingData, PyFloat_FromDouble(trainingData[i]));
+				PyList_Append(pDate, );
 			}
-			/*PyList_Append(pList, PyFloat_FromDouble(100.21));
-			PyList_Append(pList, PyFloat_FromDouble(200.09));
-			PyList_Append(pList, PyFloat_FromDouble(90.03));*/
 
-			if (pList)
+			if (pTrainingData)
 			{
-				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pList, NULL);
+				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, NULL);
 				pFunc.Release();
-				pList.Release();
+				pTrainingData.Release();
 				if (pValue)
 				{
 					double num = PyFloat_AsDouble(pValue);
@@ -186,7 +185,7 @@ void InitTrainingData(MultiCharts* multiCharts, int size)
 
 void SetTrainingData(MultiCharts* multiCharts, double* trainingData)
 {
-	if (multiCharts != NULL)
+	if (multiCharts != NULL) 
 	{
 		multiCharts->SetTrainingData(trainingData);
 	}
