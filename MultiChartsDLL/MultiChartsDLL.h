@@ -6,7 +6,6 @@
 	#define MULTICHARTSMACRO __declspec(dllimport)
 #endif
 
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 constexpr auto DATE_SIZE = 20;
 
 extern "C" class MULTICHARTSMACRO MultiCharts
