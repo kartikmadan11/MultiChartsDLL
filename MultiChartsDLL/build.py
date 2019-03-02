@@ -1,15 +1,20 @@
+import numpy as np
+import pandas as pd
+
 def getRandomText():
     return "AB12"
 
-def train(li):
-    if(type(li) == list):
-        li = [e+5 for e in li]
-        return sum(li)
+def train(X_train, date):
+    if(type(X_train) == list):
+        df = pd.DataFrame(data = X_train, columns = ['Feature'], index = date);
+        df.index.names = ['Date'];
+        df.to_csv('dataframe');
+        return 100
     else:
-        return sum(li)
+        return 110
 
 def getString(str):
     if str == 'Kartik':
         return 100
     else:
-        return 0
+        return 101

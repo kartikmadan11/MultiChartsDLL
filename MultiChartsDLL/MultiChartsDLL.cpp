@@ -121,14 +121,15 @@ double MultiCharts::TrainModel()
 			for (int i = 0; i < trainingDataSize; i++)
 			{
 				PyList_Append(pTrainingData, PyFloat_FromDouble(trainingData[i]));
-				PyList_Append(pDate, );
+				PyList_Append(pDate, PyUnicode_FromStringAndSize(dateArray[i], dateArraySize));
 			}
 
-			if (pTrainingData)
+			if (pTrainingData && pDate)
 			{
-				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, NULL);
+				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, NULL);
 				pFunc.Release();
 				pTrainingData.Release();
+				pDate.Release();
 				if (pValue)
 				{
 					double num = PyFloat_AsDouble(pValue);
