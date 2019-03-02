@@ -46,36 +46,6 @@ MultiCharts::~MultiCharts()
 
 */
 
-/*
-char* MultiCharts::GetPythonStringData()
-{
-	CPyInstance hInstance;
-
-	//CPyObject pName = PyUnicode_FromString("build");
-	CPyObject pModule = PyImport_ImportModule("build");
-	if (pModule)
-	{
-		CPyObject pFunc = PyObject_GetAttrString(pModule, "getRandomText");
-		if (pFunc)
-		{
-			CPyObject pValue = PyObject_CallObject(pFunc, NULL);
-			pythonStringData = PyUnicode_AsUTF8(pValue);
-			return pythonStringData;
-		}
-		else
-		{
-			pythonStringData = new char[4] {"101"};
-			return pythonStringData;
-		}
-	}
-	else
-	{
-		pythonStringData = new char[4] {"102"};
-		return pythonStringData;
-	}
-}
-*/
-
 void MultiCharts::InitTrainingData(int size)
 {
 	this->trainingDataSize = size;
