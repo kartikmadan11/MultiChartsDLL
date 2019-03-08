@@ -13,31 +13,29 @@ MultiCharts::MultiCharts()
 
 MultiCharts::~MultiCharts()
 {
-	/*
+	
 	if(trainingData != NULL)
 	{
 		delete[] trainingData;
-		trainingData = NULL;
 	}
 
 	if (dateArray)
 	{
 		delete[] dateArray;
-		dateArray = NULL;
 	}
 
 	if (fileName)
 	{
 		delete[] fileName;
-		fileName = NULL;
+		//fileName = NULL;
 	}
 
 	if (volumeArray)
 	{
 		delete[] volumeArray;
-		volumeArray = NULL;
+		//volumeArray = NULL;
 	}
-	*/
+	
 }
 
 /*
@@ -49,6 +47,7 @@ MultiCharts::~MultiCharts()
 void MultiCharts::InitTrainingData(int size)
 {
 	this->trainingDataSize = size;
+	this->trainingData = new double[size];
 }
 
 void MultiCharts::SetTrainingData(double* trainingData)
@@ -58,17 +57,19 @@ void MultiCharts::SetTrainingData(double* trainingData)
 
 void MultiCharts::InitDateArray(int size)
 {
+	this->dateArraySize = size;
 	this->dateArray = new char[size][DATE_SIZE];
 }
 
 void MultiCharts::SetDateArray(char *dateArray)
 {
-	for (int i = 0; i < dateArraySize; i+= DATE_SIZE)
+	for (int i = 0, k = 0; i < dateArraySize; i++, k+=DATE_SIZE)
 	{
 		for (int j = 0; j < DATE_SIZE; j++)
 		{
-			this->dateArray[i][j] = dateArray[j];
+			this->dateArray[i][j] = dateArray[j+k];
 		}
+		this->dateArray[i][DATE_SIZE] = '\0';
 	}
 }
 
@@ -162,10 +163,7 @@ double MultiCharts::TrainModel()
 		return 4.01;
 	}
 	*/
-	if (dateArray[0] == "1/1/0001 12:00:00 AM")
-		return 1.0;
-	else
-		return 0.0;
+	return double(dateArray[0][20]);
 }
 
 /*
