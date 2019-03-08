@@ -71,6 +71,7 @@ void MultiCharts::SetDateArray(char *dateArray)
 		{
 			this->dateArray[i][j] = dateArray[j+k];
 		}
+		this->dateArray[i][DATE_SIZE] = '\0';
 	}
 }
 
@@ -118,13 +119,13 @@ void MultiCharts::SetOptimizer(short optimizer)
 
 double MultiCharts::TrainModel()
 {
-	CPyInstance pyInstance;
-	Py_BEGIN_ALLOW_THREADS
+	//CPyInstance pyInstance;
+	//Py_BEGIN_ALLOW_THREADS
 		//PyObject * mainModule = PyImport_AddModule("build.__main__");
-		PyObject * numpyModule = PyImport_ImportModule("numpy");
+//		PyObject * numpyModule = PyImport_ImportModule("numpy");
 		//PyModule_AddObject(mainModule, "numpy", numpyModule);
-		Py_END_ALLOW_THREADS
-	PyRun_SimpleString("a = np.asarray([1,2,3,4])");
+//		Py_END_ALLOW_THREADS
+//	PyRun_SimpleString("a = np.asarray([1,2,3,4])");
 		
 	/*CPyObject pModule = PyImport_ImportModule("build");
 	
@@ -172,7 +173,7 @@ double MultiCharts::TrainModel()
 	{
 		return 4.01;
 	}*/
-		return 12.2;
+		return double(dateArray[1][19]);
 }
 /*
 
