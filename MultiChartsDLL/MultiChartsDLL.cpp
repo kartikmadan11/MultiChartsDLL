@@ -63,7 +63,7 @@ void MultiCharts::InitDateArray(int size)
 
 void MultiCharts::SetDateArray(char *dateArray)
 {
-	for (int i = 0; i < (dateArraySize/DATE_SIZE); i++)
+	for (int i = 0; i < dateArraySize; i+= DATE_SIZE)
 	{
 		for (int j = 0; j < DATE_SIZE; j++)
 		{
