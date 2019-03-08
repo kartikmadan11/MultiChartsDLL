@@ -49,7 +49,7 @@ MultiCharts::~MultiCharts()
 void MultiCharts::InitTrainingData(int size)
 {
 	this->trainingDataSize = size;
-	trainingData = new double[size];
+	this->trainingData = new double[size];
 }
 
 void MultiCharts::SetTrainingData(double* trainingData)
@@ -59,18 +59,17 @@ void MultiCharts::SetTrainingData(double* trainingData)
 
 void MultiCharts::InitDateArray(int size)
 {
-	this->trainingDataSize = size;
-	this->dateArrayHelper = new char[size];
-	this->dateArray = new char[size/DATE_SIZE][DATE_SIZE];
+	this->dateArraySize = (size / DATE_SIZE);
+	this->dateArray = new char[dateArraySize][DATE_SIZE];
 }
 
 void MultiCharts::SetDateArray(char *dateArray)
 {
-	for (int i = 0; i < (dateArraySize/DATE_SIZE); i++)
+	for (int i = 0, k = 0; i < dateArraySize; i++, k+=DATE_SIZE)
 	{
 		for (int j = 0; j < DATE_SIZE; j++)
 		{
-			dateArray[i][j] = dateArrayHelper[i+j];
+			this->dateArray[i][j] = dateArray[j+k];
 		}
 	}
 }
@@ -82,12 +81,13 @@ void MultiCharts::InitVolumeArray(int size)
 }
 
 void MultiCharts::SetVolumeArray(long* volume)
-{
+{ 
 	this->volumeArray = volume;
 }
 
 void MultiCharts::InitFileName(int size)
 {
+	this->fileNameSize = size;
 	this->fileName = new char[size];
 }
 
@@ -118,10 +118,17 @@ void MultiCharts::SetOptimizer(short optimizer)
 
 double MultiCharts::TrainModel()
 {
-	/*
 	CPyInstance pyInstance;
-	CPyObject pModule = PyImport_ImportModule("build");
-
+	Py_BEGIN_ALLOW_THREADS
+		//PyObject * mainModule = PyImport_AddModule("build.__main__");
+		PyObject * numpyModule = PyImport_ImportModule("numpy");
+		//PyModule_AddObject(mainModule, "numpy", numpyModule);
+		Py_END_ALLOW_THREADS
+	PyRun_SimpleString("a = np.asarray([1,2,3,4])");
+		
+	/*CPyObject pModule = PyImport_ImportModule("build");
+	
+	//PyRun_SimpleString("import keras");
 	if (pModule)
 	{
 		CPyObject pFunc = PyObject_GetAttrString(pModule, "train");
@@ -132,15 +139,15 @@ double MultiCharts::TrainModel()
 			for (int i = 0; i < trainingDataSize; i++)
 			{
 				PyList_Append(pTrainingData, PyFloat_FromDouble(trainingData[i]));
-				PyList_Append(pDate, PyUnicode_FromStringAndSize(dateArray[i], dateArraySize));
+				PyList_Append(pDate, PyUnicode_FromStringAndSize(dateArray[i], DATE_SIZE));
 			}
-
 			if (pTrainingData && pDate)
 			{
 				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, NULL);
+				
 				pFunc.Release();
-				pTrainingData.Release();
 				pDate.Release();
+				pTrainingData.Release();
 				if (pValue)
 				{
 					double num = PyFloat_AsDouble(pValue);
@@ -164,14 +171,9 @@ double MultiCharts::TrainModel()
 	else
 	{
 		return 4.01;
-	}
-	*/
-	if (dateArray[0][0] == '1')
-		return 1.0;
-	else
-		return 0.0;
+	}*/
+		return 12.2;
 }
-
 /*
 
 		-- Exported Functions --
