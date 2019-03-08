@@ -6,7 +6,7 @@
 	#define MULTICHARTSMACRO __declspec(dllimport)
 #endif
 
-constexpr auto DATE_SIZE = 20;
+constexpr auto DATE_SIZE = 21;
 
 extern "C" class MULTICHARTSMACRO MultiCharts
 {

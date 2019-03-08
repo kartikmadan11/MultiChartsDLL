@@ -162,7 +162,7 @@ double MultiCharts::TrainModel()
 		return 4.01;
 	}
 	*/
-	if (dateArray[0][0] == '1')
+	if (dateArray[0] == "1/1/0001 12:00:00 AM")
 		return 1.0;
 	else
 		return 0.0;
