@@ -49,6 +49,7 @@ MultiCharts::~MultiCharts()
 void MultiCharts::InitTrainingData(int size)
 {
 	this->trainingDataSize = size;
+	trainingData = new double[size];
 }
 
 void MultiCharts::SetTrainingData(double* trainingData)
@@ -58,22 +59,25 @@ void MultiCharts::SetTrainingData(double* trainingData)
 
 void MultiCharts::InitDateArray(int size)
 {
-	this->dateArray = new char[size][DATE_SIZE];
+	this->trainingDataSize = size;
+	this->dateArrayHelper = new char[size];
+	this->dateArray = new char[size/DATE_SIZE][DATE_SIZE];
 }
 
 void MultiCharts::SetDateArray(char *dateArray)
 {
-	for (int i = 0; i < dateArraySize; i+= DATE_SIZE)
+	for (int i = 0; i < (dateArraySize/DATE_SIZE); i++)
 	{
 		for (int j = 0; j < DATE_SIZE; j++)
 		{
-			this->dateArray[i][j] = dateArray[j];
+			dateArray[i][j] = dateArrayHelper[i+j];
 		}
 	}
 }
 
 void MultiCharts::InitVolumeArray(int size)
 {
+	this->volumeArraySize = size;
 	this->volumeArray = new long[size];
 }
 

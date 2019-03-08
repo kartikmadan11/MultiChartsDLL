@@ -13,8 +13,8 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 	double* trainingData;
 	int trainingDataSize;
 
-	char (*dateArray)[DATE_SIZE];
-	char* dateArrayHelper;
+	char (*dateArray)[20];
+	char *dateArrayHelper;
 	int dateArraySize;
 
 	long* volumeArray;
