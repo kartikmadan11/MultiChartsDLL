@@ -61,9 +61,15 @@ void MultiCharts::InitDateArray(int size)
 	this->dateArray = new char[size][DATE_SIZE];
 }
 
-void MultiCharts::SetDateArray(char(*dateArray)[DATE_SIZE])
+void MultiCharts::SetDateArray(char *dateArray)
 {
-	this->dateArray = dateArray;
+	for (int i = 0; i < (dateArraySize/DATE_SIZE); i++)
+	{
+		for (int j = 0; j < DATE_SIZE; j++)
+		{
+			this->dateArray[i][j] = dateArray[j];
+		}
+	}
 }
 
 void MultiCharts::InitVolumeArray(int size)
@@ -108,6 +114,7 @@ void MultiCharts::SetOptimizer(short optimizer)
 
 double MultiCharts::TrainModel()
 {
+	/*
 	CPyInstance pyInstance;
 	CPyObject pModule = PyImport_ImportModule("build");
 
@@ -154,6 +161,11 @@ double MultiCharts::TrainModel()
 	{
 		return 4.01;
 	}
+	*/
+	if (dateArray[0][0] == '1')
+		return 1.0;
+	else
+		return 0.0;
 }
 
 /*
@@ -200,7 +212,7 @@ void InitDateArray(MultiCharts* multiCharts, int size)
 	}
 }
 
-void SetDateArray(MultiCharts* multiCharts, char(*dateArray)[DATE_SIZE])
+void SetDateArray(MultiCharts* multiCharts, char *dateArray)
 {
 	if (multiCharts != NULL)
 	{
