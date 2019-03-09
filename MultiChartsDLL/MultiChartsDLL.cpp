@@ -115,8 +115,13 @@ void MultiCharts::SetOptimizer(short optimizer)
 
 double MultiCharts::TrainModel()
 {
-	/*
+	
 	CPyInstance pyInstance;
+	PyThreadState *_save; 
+	_save = PyEval_SaveThread();
+	PyRun_SimpleString("import numpy as np");
+	PyEval_RestoreThread(_save);
+	/*
 	CPyObject pModule = PyImport_ImportModule("build");
 
 	if (pModule)
