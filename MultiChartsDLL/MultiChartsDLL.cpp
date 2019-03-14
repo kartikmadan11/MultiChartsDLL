@@ -234,5 +234,8 @@ void SetOptimizer(MultiCharts* multiCharts, short optimizer)
 
 double TrainModel(MultiCharts* multiCharts)
 {
-	return multiCharts->TrainModel();
+	if (multiCharts != NULL)
+	{
+		return multiCharts->TrainModel();
+	}
 }
