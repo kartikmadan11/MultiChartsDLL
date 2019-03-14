@@ -1,7 +1,6 @@
 // MultiChartsDLL.cpp : Defines the exported functions for the DLL application.
 //
 
-#include "Python.h"
 #include "stdafx.h"
 #include "MultiChartsDLL.h"
 
@@ -114,7 +113,7 @@ void MultiCharts::SetOptimizer(short optimizer)
 
 double MultiCharts::TrainModel()
 {
-	return 0.0;
+	return double(dateArray[20][10]);
 }
 
 /*
