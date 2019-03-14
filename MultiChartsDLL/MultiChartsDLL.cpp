@@ -4,7 +4,6 @@
 #include "Python.h"
 #include "stdafx.h"
 #include "MultiChartsDLL.h"
-#include "pyhelper.hpp"
 
 MultiCharts::MultiCharts()
 {
@@ -115,59 +114,7 @@ void MultiCharts::SetOptimizer(short optimizer)
 
 double MultiCharts::TrainModel()
 {
-	
-	CPyInstance pyInstance;
-	PyThreadState *_save; 
-	_save = PyEval_SaveThread();
-	PyEval_RestoreThread(_save);
-	/*
-	CPyObject pModule = PyImport_ImportModule("build");
-
-	if (pModule)
-	{
-		CPyObject pFunc = PyObject_GetAttrString(pModule, "train");
-		if (pFunc && PyCallable_Check(pFunc))
-		{
-			CPyObject pTrainingData = PyList_New(0);
-			CPyObject pDate = PyList_New(0);
-			for (int i = 0; i < trainingDataSize; i++)
-			{
-				PyList_Append(pTrainingData, PyFloat_FromDouble(trainingData[i]));
-				PyList_Append(pDate, PyUnicode_FromStringAndSize(dateArray[i], dateArraySize));
-			}
-
-			if (pTrainingData && pDate)
-			{
-				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, NULL);
-				pFunc.Release();
-				pTrainingData.Release();
-				pDate.Release();
-				if (pValue)
-				{
-					double num = PyFloat_AsDouble(pValue);
-					return num;
-				}
-				else
-				{
-					return 1.01;
-				}
-			}
-			else
-			{
-				return 2.01;
-			}
-		}
-		else
-		{
-			return 3.01;
-		}
-	}
-	else
-	{
-		return 4.01;
-	}
-	*/
-	return double(dateArray[0][20]);
+	return 0.0;
 }
 
 /*
@@ -210,7 +157,7 @@ void InitDateArray(MultiCharts* multiCharts, int size)
 {
 	if (multiCharts != NULL)
 	{
-		multiCharts->InitTrainingData(size);
+		multiCharts->InitDateArray(size);
 	}
 }
 
@@ -226,7 +173,7 @@ void InitVolumeArray(MultiCharts* multiCharts, int size)
 {
 	if (multiCharts != NULL)
 	{
-		multiCharts->InitTrainingData(size);
+		multiCharts->InitVolumeArray(size);
 	}
 }
 
@@ -242,7 +189,7 @@ void InitFileName(MultiCharts * multiCharts, int size)
 {
 	if (multiCharts != NULL)
 	{
-		multiCharts->InitTrainingData(size);
+		multiCharts->InitFileName(size);
 	}
 }
 
