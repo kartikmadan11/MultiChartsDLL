@@ -262,3 +262,4 @@ __pycache__/
 *.vcxproj	
 MultiChartsDLL/python-build/plotly_api.txt
 MultiChartsDLL/MultiChartsDLL.vcxproj
+*.vcxproj

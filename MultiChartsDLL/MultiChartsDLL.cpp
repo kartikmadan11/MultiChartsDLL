@@ -18,7 +18,7 @@ void MultiCharts::DisposeMultiCharts()
 {
 	if (trainingData != NULL)
 	{
-		delete trainingData;
+		delete[] trainingData;
 	}
 
 	if (dateArray)
@@ -36,7 +36,7 @@ void MultiCharts::DisposeMultiCharts()
 	{
 		delete[] volumeArray;
 		//volumeArray = NULL;
-	}	
+	}
 }
 
 void MultiCharts::InitTrainingData(int size)
