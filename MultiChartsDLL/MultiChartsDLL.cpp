@@ -4,17 +4,21 @@
 #include "stdafx.h"
 #include "MultiChartsDLL.h"
 
-MultiCharts::MultiCharts()
-{
+MultiCharts::MultiCharts() {}
 
-}
+MultiCharts::~MultiCharts() {}
 
-MultiCharts::~MultiCharts()
+/*
+
+		--Member Functions--
+
+*/
+
+void MultiCharts::DisposeMultiCharts()
 {
-	
-	if(trainingData != NULL)
+	if (trainingData != NULL)
 	{
-		delete[] trainingData;
+		delete trainingData;
 	}
 
 	if (dateArray)
@@ -32,15 +36,8 @@ MultiCharts::~MultiCharts()
 	{
 		delete[] volumeArray;
 		//volumeArray = NULL;
-	}
-	
+	}	
 }
-
-/*
-
-		--Member Functions--
-
-*/
 
 void MultiCharts::InitTrainingData(int size)
 {
@@ -113,7 +110,7 @@ void MultiCharts::SetOptimizer(short optimizer)
 
 double MultiCharts::TrainModel()
 {
-	return double(dateArray[20][10]);
+	return double(dateArray[0][5]);
 }
 
 /*
@@ -131,8 +128,7 @@ void DisposeMultiCharts(MultiCharts* multiCharts)
 {
 	if (multiCharts != NULL)
 	{
-		delete multiCharts;
-		multiCharts = NULL;
+		multiCharts->DisposeMultiCharts();
 	}
 }
 
