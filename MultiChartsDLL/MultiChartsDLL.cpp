@@ -6,15 +6,19 @@
 #include "MultiChartsDLL.h"
 #include "pyhelper.hpp"
 
-MultiCharts::MultiCharts()
-{
+MultiCharts::MultiCharts() { }
 
-}
+MultiCharts::~MultiCharts() { }
 
-MultiCharts::~MultiCharts()
+/*
+
+		--Member Functions--
+
+*/
+
+void MultiCharts::DisposeMultiCharts()
 {
-	
-	if(trainingData != NULL)
+	if (trainingData != NULL)
 	{
 		delete[] trainingData;
 	}
@@ -35,14 +39,7 @@ MultiCharts::~MultiCharts()
 		delete[] volumeArray;
 		//volumeArray = NULL;
 	}
-	
 }
-
-/*
-
-		--Member Functions--
-
-*/
 
 void MultiCharts::InitTrainingData(int size)
 {
@@ -185,7 +182,7 @@ void DisposeMultiCharts(MultiCharts* multiCharts)
 {
 	if (multiCharts != NULL)
 	{
-		delete multiCharts;
+		multiCharts->DisposeMultiCharts();
 		multiCharts = NULL;
 	}
 }

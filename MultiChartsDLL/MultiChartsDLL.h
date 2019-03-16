@@ -32,6 +32,7 @@ extern "C" class MULTICHARTSMACRO MultiCharts
   
 		MultiCharts();
 		~MultiCharts();
+		void DisposeMultiCharts();
 	
 		void InitTrainingData(int size);
 		void SetTrainingData(double* trainingData);
