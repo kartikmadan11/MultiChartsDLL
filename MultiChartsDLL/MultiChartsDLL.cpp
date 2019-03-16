@@ -116,10 +116,9 @@ double MultiCharts::TrainModel()
 {
 	
 	CPyInstance pyInstance;
-	PyThreadState *_save; 
-	_save = PyEval_SaveThread();
-	PyEval_RestoreThread(_save);
-	/*
+	//PyThreadState *_save; 
+	//_save = PyEval_SaveThread();
+	//PyEval_RestoreThread(_save);
 	CPyObject pModule = PyImport_ImportModule("build");
 
 	if (pModule)
@@ -132,7 +131,7 @@ double MultiCharts::TrainModel()
 			for (int i = 0; i < trainingDataSize; i++)
 			{
 				PyList_Append(pTrainingData, PyFloat_FromDouble(trainingData[i]));
-				PyList_Append(pDate, PyUnicode_FromStringAndSize(dateArray[i], dateArraySize));
+				PyList_Append(pDate, PyUnicode_FromStringAndSize("abc",4));
 			}
 
 			if (pTrainingData && pDate)
@@ -143,8 +142,7 @@ double MultiCharts::TrainModel()
 				pDate.Release();
 				if (pValue)
 				{
-					double num = PyFloat_AsDouble(pValue);
-					return num;
+					return PyFloat_AsDouble(pValue);
 				}
 				else
 				{
@@ -165,8 +163,6 @@ double MultiCharts::TrainModel()
 	{
 		return 4.01;
 	}
-	*/
-	return double(dateArray[0][20]);
 }
 
 /*
