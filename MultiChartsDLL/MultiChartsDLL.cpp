@@ -21,23 +21,25 @@ void MultiCharts::DisposeMultiCharts()
 	if (trainingData != NULL)
 	{
 		delete[] trainingData;
+		trainingData = NULL;
 	}
 
 	if (dateArray)
 	{
 		delete[] dateArray;
+		dateArray = NULL;
 	}
 
 	if (fileName)
 	{
 		delete[] fileName;
-		//fileName = NULL;
+		fileName = NULL;
 	}
 
 	if (volumeArray)
 	{
 		delete[] volumeArray;
-		//volumeArray = NULL;
+		volumeArray = NULL;
 	}
 }
 
