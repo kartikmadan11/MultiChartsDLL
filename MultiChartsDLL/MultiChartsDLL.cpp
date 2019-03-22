@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "MultiChartsDLL.h"
 #include "pyhelper.hpp"
+#include "string"
 
 MultiCharts::MultiCharts() { }
 
@@ -120,7 +121,7 @@ double MultiCharts::TrainModel()
 	//_save = PyEval_SaveThread();
 	//PyEval_RestoreThread(_save);
 	CPyObject pModule = PyImport_ImportModule("build");
-
+	
 	if (pModule)
 	{
 		CPyObject pFunc = PyObject_GetAttrString(pModule, "train");
@@ -130,8 +131,16 @@ double MultiCharts::TrainModel()
 			CPyObject pDate = PyList_New(0);
 			for (int i = 0; i < trainingDataSize; i++)
 			{
+				char* dateAtPosI = new char[DATE_SIZE];
+				for (int j = 0; j < DATE_SIZE; j++)
+				{
+					dateAtPosI[j] = dateArray[i][j];
+				}
+				dateAtPosI[DATE_SIZE] = '\0';
+				std::string date(dateAtPosI);
+				const char* c = date.c_str();
 				PyList_Append(pTrainingData, PyFloat_FromDouble(trainingData[i]));
-				PyList_Append(pDate, PyUnicode_FromStringAndSize("abc",4));
+				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
 			}
 
 			if (pTrainingData && pDate)
@@ -164,6 +173,12 @@ double MultiCharts::TrainModel()
 		return 4.01;
 	}
 }
+
+/*
+
+        -- Helpers
+
+*/
 
 /*
 
