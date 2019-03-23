@@ -63,13 +63,13 @@ void MultiCharts::InitDateArray(int size)
 
 void MultiCharts::SetDateArray(char *dateArray)
 {
-	for (int i = 0, k = 0; i < dateArraySize; i++, k+=DATE_SIZE)
+	for (int i = 0, k = 0; i < dateArraySize; i++, k+=DATE_SIZE - 1)
 	{
-		for (int j = 0; j < DATE_SIZE; j++)
+		for (int j = 0; j < DATE_SIZE - 1; j++)
 		{
 			this->dateArray[i][j] = dateArray[j+k];
 		}
-		this->dateArray[i][DATE_SIZE] = '\0';
+		this->dateArray[i][DATE_SIZE - 1] = '\0';
 	}
 }
 
@@ -98,7 +98,7 @@ void MultiCharts::SetLearningRate(double learningRate)
 	this->learningRate = learningRate;
 }
 
-void MultiCharts::SetEpochs(short epochs)
+void MultiCharts::SetEpochs(int epochs)
 {
 	this->epochs = epochs;
 }
@@ -108,7 +108,7 @@ void MultiCharts::SetScale(int scale)
 	this->scale = scale;
 }
 
-void MultiCharts::SetOptimizer(short optimizer)
+void MultiCharts::SetOptimizer(int optimizer)
 {
 	this->optimizer = optimizer;
 }
@@ -132,23 +132,29 @@ double MultiCharts::TrainModel()
 			for (int i = 0; i < trainingDataSize; i++)
 			{
 				char* dateAtPosI = new char[DATE_SIZE];
-				for (int j = 0; j < DATE_SIZE; j++)
+				for (int j = 0; j < DATE_SIZE - 1; j++)
 				{
 					dateAtPosI[j] = dateArray[i][j];
 				}
-				dateAtPosI[DATE_SIZE] = '\0';
+				dateAtPosI[DATE_SIZE - 1] = '\0';
 				std::string date(dateAtPosI);
 				const char* c = date.c_str();
 				PyList_Append(pTrainingData, PyFloat_FromDouble(trainingData[i]));
 				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
 			}
+			CPyObject pLearningRate = PyUnicode_FromFormat("%.2f", learningRate);
+			CPyObject pScale = PyUnicode_FromFormat("%d", scale);
+			CPyObject pEpochs = PyUnicode_FromFormat("%d", epochs);
 
 			if (pTrainingData && pDate)
 			{
-				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, NULL);
+				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, pLearningRate, pScale, pEpochs, NULL);
 				pFunc.Release();
 				pTrainingData.Release();
 				pDate.Release();
+				pLearningRate.Release();
+				pScale.Release();
+				pEpochs.Release();
 				if (pValue)
 				{
 					return PyFloat_AsDouble(pValue);
