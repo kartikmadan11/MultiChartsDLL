@@ -115,20 +115,29 @@ void MultiCharts::SetOptimizer(int optimizer)
 
 double MultiCharts::TrainModel()
 {
-	
+	// Creating a Python Instance
 	CPyInstance pyInstance;
+
 	//PyThreadState *_save; 
 	//_save = PyEval_SaveThread();
 	//PyEval_RestoreThread(_save);
+
+	// Importing the .py module
 	CPyObject pModule = PyImport_ImportModule("build");
 	
 	if (pModule)
 	{
+		// Importing the Train Function
 		CPyObject pFunc = PyObject_GetAttrString(pModule, "train");
+		
 		if (pFunc && PyCallable_Check(pFunc))
 		{
+			// Creating PyObjects Parameters for Train Function 
+
+			//Python Lists for Training Data Values and Dates
 			CPyObject pTrainingData = PyList_New(0);
 			CPyObject pDate = PyList_New(0);
+			
 			for (int i = 0; i < trainingDataSize; i++)
 			{
 				char* dateAtPosI = new char[DATE_SIZE];
@@ -142,19 +151,25 @@ double MultiCharts::TrainModel()
 				PyList_Append(pTrainingData, PyFloat_FromDouble(trainingData[i]));
 				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
 			}
+
 			CPyObject pLearningRate = PyUnicode_FromFormat("%.2f", learningRate);
 			CPyObject pScale = PyUnicode_FromFormat("%d", scale);
 			CPyObject pEpochs = PyUnicode_FromFormat("%d", epochs);
 
 			if (pTrainingData && pDate)
 			{
+				// Receiving return value from the Train Function
 				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, pLearningRate, pScale, pEpochs, NULL);
+				
+				// Releasing Function and Parameter Objects 
 				pFunc.Release();
 				pTrainingData.Release();
 				pDate.Release();
 				pLearningRate.Release();
 				pScale.Release();
 				pEpochs.Release();
+
+
 				if (pValue)
 				{
 					return PyFloat_AsDouble(pValue);
