@@ -7,6 +7,7 @@ import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM, Dropout, GRU, Bidirectional
 from tensorflow.keras.optimizers import SGD
+
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import MinMaxScaler
 
@@ -14,8 +15,13 @@ from sklearn.preprocessing import MinMaxScaler
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
+# Suppressing deprecated warnings
+tf.logging.set_verbosity(tf.logging.ERROR)
+
 def train(training_set, date, lr, scale, epochs):
     if(type(training_set) == list):
+        
+        # Constructing a pandas dataframe for reusability and reference
         df = pd.DataFrame(data = training_set, columns = ['Feature'], index = date)
         df.index.names = ['Date']
         df.index = pd.to_datetime(df.index);
@@ -27,6 +33,8 @@ def train(training_set, date, lr, scale, epochs):
         sc = MinMaxScaler(feature_range=(0,1))
         training_set_scaled = sc.fit_transform(training_set)
 
+        # creating a data structure with 60 timesteps and 1 output
+        # for each element of training set, we have 60 previous training set elements 
         X_train = []
         Y_train = []
         for i in range(60,training_set_scaled.shape[0]):
@@ -37,7 +45,7 @@ def train(training_set, date, lr, scale, epochs):
         # Reshaping X_train for efficient modelling
         X_train = np.reshape(X_train, (X_train.shape[0],X_train.shape[1],1))
 
-        tf.logging.set_verbosity(tf.logging.ERROR)
+        # Constructing an stacked LSTM Sequential Model
 
         # The LSTM architecture
         regressor = Sequential()
