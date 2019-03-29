@@ -18,7 +18,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # Suppressing deprecated warnings
 tf.logging.set_verbosity(tf.logging.ERROR)
 
-def train(training_set, date, lr = 0.1, scale = 0, epochs = 1, momentum = 10, optimizer = 0, fileName = "model"):
+def train(training_set, date, lr, scale, epochs, momentum, optimizer):
     if(type(training_set) == list):
         
         # Constructing a pandas dataframe for reusability and reference

@@ -153,23 +153,24 @@ double MultiCharts::TrainModel()
 				dateAtPosI[DATE_SIZE - 1] = '\0';
 				std::string date(dateAtPosI);
 				const char* c = date.c_str();
+
 				PyList_Append(pTrainingData, PyFloat_FromDouble(trainingData[i]));
 				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
 			}
 
-			std::string fileNameString(fileName);
+			//std::string fileNameString(fileName);
 
 			CPyObject pLearningRate = PyFloat_FromDouble(learningRate);
 			CPyObject pScale = PyUnicode_FromFormat("%d", scale);
 			CPyObject pEpochs = PyUnicode_FromFormat("%d", epochs);
 			CPyObject pMomentum = PyUnicode_FromFormat("%d", momentum);
 			CPyObject pOptimizer = PyUnicode_FromFormat("%d", optimizer);
-			CPyObject pFileName = PyUnicode_FromFormat("%s", fileNameString.c_str());
+			//CPyObject pFileName = PyUnicode_FromFormat("%s", fileNameString.c_str());
 			
-			if (pTrainingData && pDate)
+			if (pTrainingData && pDate && pLearningRate &&  pScale && pEpochs && pMomentum && pOptimizer) //&& pFileName)
 			{
 				// Receiving return value from the Train Function
-				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, pLearningRate, pScale, pEpochs, pMomentum, pOptimizer, pFileName, NULL);
+				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, pLearningRate, pScale, pEpochs, pMomentum, pOptimizer, NULL);
 				
 				// Releasing Function and Parameter Objects 
 				pFunc.Release();
@@ -180,7 +181,7 @@ double MultiCharts::TrainModel()
 				pEpochs.Release();
 				pMomentum.Release();
 				pOptimizer.Release();
-				pFileName.Release();
+				//pFileName.Release();
 
 				if (pValue)
 				{
