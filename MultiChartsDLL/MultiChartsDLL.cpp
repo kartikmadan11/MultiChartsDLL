@@ -158,9 +158,11 @@ double MultiCharts::TrainModel()
 				dateAtPosI[DATE_SIZE - 1] = '\0';
 				std::string date(dateAtPosI);
 				const char* c = date.c_str();
+
 				PyList_Append(pTrainingData, PyFloat_FromDouble(trainingData[i]));
 				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
 			}
+
 
 			std::string fileNameString(fileName);
 			const char* c = fileNameString.c_str();
@@ -186,7 +188,7 @@ double MultiCharts::TrainModel()
 				pEpochs.Release();
 				pMomentum.Release();
 				pOptimizer.Release();
-				pFileName.Release();
+				//pFileName.Release();
 
 				if (pValue)
 				{

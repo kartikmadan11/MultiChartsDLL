@@ -6,7 +6,7 @@ import tensorflow as tf
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM, Dropout, GRU, Bidirectional
-from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.optimizers import SGD, RMSprop
 
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import MinMaxScaler  
@@ -45,7 +45,7 @@ def train(training_set, date, lr, scale, epochs, momentum, optimizer):
         # Reshaping X_train for efficient modelling
         X_train = np.reshape(X_train, (X_train.shape[0],X_train.shape[1],1))
 
-        # Constructing an stacked LSTM Sequential Model
+        # Constructing a stacked LSTM Sequential Model
 
         # The LSTM architecture
         regressor = Sequential()
@@ -65,7 +65,7 @@ def train(training_set, date, lr, scale, epochs, momentum, optimizer):
         regressor.add(Dense(units=1))
 
         # Compiling the RNN
-        regressor.compile(optimizer='rmsprop',loss='mean_squared_error')
+        regressor.compile(optimizer=getOptimizer(optimizer, lr, momentum),loss='mean_squared_error')
         # Fitting to the training set
         regressor.fit(X_train, Y_train,epochs=2,batch_size=32)
 
@@ -73,3 +73,9 @@ def train(training_set, date, lr, scale, epochs, momentum, optimizer):
     
     else:
         return 110
+
+def getOptimizer(optimizer, lr, momentum):
+    if optimizer == 0:
+        return RMSprop(lr = lr)
+    elif optimizer == 1:
+        return SGD(lr = lr, momentum = momentum)
