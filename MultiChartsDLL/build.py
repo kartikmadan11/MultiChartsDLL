@@ -45,7 +45,7 @@ def train(training_set, date, lr = 0.1, scale = 0, epochs = 1, momentum = 10, op
         # Reshaping X_train for efficient modelling
         X_train = np.reshape(X_train, (X_train.shape[0],X_train.shape[1],1))
 
-        # Constructing an stacked LSTM Sequential Model
+        # Constructing a stacked LSTM Sequential Model
 
         # The LSTM architecture
         regressor = Sequential()
