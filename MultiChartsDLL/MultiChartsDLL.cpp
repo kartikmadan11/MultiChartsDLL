@@ -25,19 +25,19 @@ void MultiCharts::DisposeMultiCharts()
 		trainingData = NULL;
 	}
 
-	if (dateArray)
+	if (dateArray != NULL)
 	{
 		delete[] dateArray;
 		dateArray = NULL;
 	}
 
-	if (fileName)
+	if (fileName != NULL)
 	{
 		delete[] fileName;
 		fileName = NULL;
 	}
 
-	if (volumeArray)
+	if (volumeArray != NULL)
 	{
 		delete[] volumeArray;
 		volumeArray = NULL;
@@ -85,12 +85,17 @@ void MultiCharts::SetVolumeArray(long* volume)
 
 void MultiCharts::InitFileName(int size)
 {
+	this->fileNameSize = size;
 	this->fileName = new char[size];
 }
 
 void MultiCharts::SetFileName(char* fileName)
 {
-	this->fileName = fileName;
+	for (int i = 0; i < fileNameSize; i++)
+	{
+		this->fileName[i] = fileName[i];
+	}
+	fileName[fileNameSize] = '\0';
 }
 
 void MultiCharts::SetLearningRate(double learningRate)
@@ -123,26 +128,26 @@ double MultiCharts::TrainModel()
 	// Creating a Python Instance
 	CPyInstance pyInstance;
 
-	//PyThreadState *_save; 
+	//PyThreadState *_save;
 	//_save = PyEval_SaveThread();
 	//PyEval_RestoreThread(_save);
 
 	// Importing the .py module
 	CPyObject pModule = PyImport_ImportModule("build");
-	
+
 	if (pModule)
 	{
 		// Importing the Train Function
 		CPyObject pFunc = PyObject_GetAttrString(pModule, "train");
-		
+
 		if (pFunc && PyCallable_Check(pFunc))
 		{
-			// Creating PyObjects Parameters for Train Function 
+			// Creating PyObjects Parameters for Train Function
 
 			//Python Lists for Training Data Values and Dates
 			CPyObject pTrainingData = PyList_New(0);
 			CPyObject pDate = PyList_New(0);
-			
+
 			for (int i = 0; i < trainingDataSize; i++)
 			{
 				char* dateAtPosI = new char[DATE_SIZE];
@@ -158,21 +163,23 @@ double MultiCharts::TrainModel()
 				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
 			}
 
-			//std::string fileNameString(fileName);
+
+			std::string fileNameString(fileName);
+			const char* c = fileNameString.c_str();
 
 			CPyObject pLearningRate = PyFloat_FromDouble(learningRate);
-			CPyObject pScale = PyUnicode_FromFormat("%d", scale);
-			CPyObject pEpochs = PyUnicode_FromFormat("%d", epochs);
-			CPyObject pMomentum = PyUnicode_FromFormat("%d", momentum);
-			CPyObject pOptimizer = PyUnicode_FromFormat("%d", optimizer);
-			//CPyObject pFileName = PyUnicode_FromFormat("%s", fileNameString.c_str());
-			
-			if (pTrainingData && pDate && pLearningRate &&  pScale && pEpochs && pMomentum && pOptimizer) //&& pFileName)
+			CPyObject pScale = Py_BuildValue("i", scale);
+			CPyObject pEpochs = Py_BuildValue("i", epochs);
+			CPyObject pMomentum = Py_BuildValue("i", momentum);
+			CPyObject pOptimizer = Py_BuildValue("i", optimizer);
+			CPyObject pFileName = PyUnicode_FromFormat("%s", c);
+
+			if (pTrainingData && pDate)
 			{
 				// Receiving return value from the Train Function
-				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, pLearningRate, pScale, pEpochs, pMomentum, pOptimizer, NULL);
-				
-				// Releasing Function and Parameter Objects 
+				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, pLearningRate, pScale, pEpochs, pMomentum, pOptimizer, pFileName, NULL);
+
+				// Releasing Function and Parameter Objects
 				pFunc.Release();
 				pTrainingData.Release();
 				pDate.Release();

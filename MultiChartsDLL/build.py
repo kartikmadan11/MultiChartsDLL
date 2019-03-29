@@ -9,7 +9,7 @@ from tensorflow.keras.layers import Dense, LSTM, Dropout, GRU, Bidirectional
 from tensorflow.keras.optimizers import SGD, RMSprop
 
 from sklearn.metrics import mean_squared_error
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler  
 
 # Just disables the warning, doesn't enable AVX/FMA
 import os
@@ -69,7 +69,7 @@ def train(training_set, date, lr, scale, epochs, momentum, optimizer):
         # Fitting to the training set
         regressor.fit(X_train, Y_train,epochs=2,batch_size=32)
 
-        return 100
+        return epochs
     
     else:
         return 110
