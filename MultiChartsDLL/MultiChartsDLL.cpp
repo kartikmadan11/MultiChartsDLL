@@ -113,6 +113,11 @@ void MultiCharts::SetOptimizer(int optimizer)
 	this->optimizer = optimizer;
 }
 
+void MultiCharts::SetMomentum(int momentum)
+{
+	this->momentum = momentum;
+}
+
 double MultiCharts::TrainModel()
 {
 	// Creating a Python Instance
@@ -152,14 +157,19 @@ double MultiCharts::TrainModel()
 				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
 			}
 
-			CPyObject pLearningRate = PyUnicode_FromFormat("%.2f", learningRate);
+			std::string fileNameString(fileName);
+
+			CPyObject pLearningRate = PyFloat_FromDouble(learningRate);
 			CPyObject pScale = PyUnicode_FromFormat("%d", scale);
 			CPyObject pEpochs = PyUnicode_FromFormat("%d", epochs);
-
+			CPyObject pMomentum = PyUnicode_FromFormat("%d", momentum);
+			CPyObject pOptimizer = PyUnicode_FromFormat("%d", optimizer);
+			CPyObject pFileName = PyUnicode_FromFormat("%s", fileNameString.c_str());
+			
 			if (pTrainingData && pDate)
 			{
 				// Receiving return value from the Train Function
-				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, pLearningRate, pScale, pEpochs, NULL);
+				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, pLearningRate, pScale, pEpochs, pMomentum, pOptimizer, pFileName, NULL);
 				
 				// Releasing Function and Parameter Objects 
 				pFunc.Release();
@@ -168,7 +178,9 @@ double MultiCharts::TrainModel()
 				pLearningRate.Release();
 				pScale.Release();
 				pEpochs.Release();
-
+				pMomentum.Release();
+				pOptimizer.Release();
+				pFileName.Release();
 
 				if (pValue)
 				{
@@ -293,7 +305,7 @@ void SetLearningRate(MultiCharts* multiCharts, double learningRate)
 	}
 }
 
-void SetEpochs(MultiCharts* multiCharts, short epochs)
+void SetEpochs(MultiCharts* multiCharts, int epochs)
 {
 	if (multiCharts != NULL)
 	{
@@ -309,11 +321,19 @@ void SetScale(MultiCharts* multiCharts, int scale)
 	}
 }
 
-void SetOptimizer(MultiCharts* multiCharts, short optimizer)
+void SetOptimizer(MultiCharts* multiCharts, int optimizer)
 {
 	if (multiCharts != NULL)
 	{
 		multiCharts->SetOptimizer(optimizer);
+	}
+}
+
+void SetMomentum(MultiCharts* multiCharts, int momentum)
+{
+	if (multiCharts != NULL)
+	{
+		multiCharts->SetMomentum(momentum);
 	}
 }
 

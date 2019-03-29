@@ -26,6 +26,7 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 	int epochs;
 	int scale;
 	int optimizer;
+	int momentum;
 
 	public:
   
@@ -49,6 +50,7 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 		void SetEpochs(int epochs);
 		void SetScale(int scale);
 		void SetOptimizer(int optimizer);
+		void SetMomentum(int momentum);
 
 		double TrainModel();
 };
@@ -76,5 +78,6 @@ extern "C" void SetLearningRate(MultiCharts* multiCharts, double learningRate);
 extern "C" void SetEpochs(MultiCharts* multiCharts, int epochs);
 extern "C" void SetScale(MultiCharts* multiCharts, int scale);
 extern "C" void SetOptimizer(MultiCharts* multiCharts, int optimizer);
+extern "C" void SetMomentum(MultiCharts* multiCharts, int momentum);
 
 extern "C" double TrainModel(MultiCharts* multiCharts);
