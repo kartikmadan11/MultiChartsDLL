@@ -42,6 +42,10 @@ void MultiCharts::DisposeMultiCharts()
 		delete[] volumeArray;
 		volumeArray = NULL;
 	}
+	if (this != NULL)
+	{
+		delete this;
+	}
 }
 
 void MultiCharts::InitTrainingData(int size)
@@ -163,16 +167,15 @@ double MultiCharts::TrainModel()
 				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
 			}
 
-
 			std::string fileNameString(fileName);
-			const char* c = fileNameString.c_str();
+			const char* d = fileNameString.c_str();
 
 			CPyObject pLearningRate = PyFloat_FromDouble(learningRate);
 			CPyObject pScale = Py_BuildValue("i", scale);
 			CPyObject pEpochs = Py_BuildValue("i", epochs);
 			CPyObject pMomentum = Py_BuildValue("i", momentum);
 			CPyObject pOptimizer = Py_BuildValue("i", optimizer);
-			CPyObject pFileName = PyUnicode_FromFormat("%s", c);
+			CPyObject pFileName = PyUnicode_FromFormat("%s", d);
 
 			if (pTrainingData && pDate)
 			{
@@ -214,12 +217,6 @@ double MultiCharts::TrainModel()
 		return 4.01;
 	}
 }
-
-/*
-
-        -- Helpers
-
-*/
 
 /*
 
