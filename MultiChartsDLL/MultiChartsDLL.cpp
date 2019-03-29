@@ -192,7 +192,7 @@ double MultiCharts::TrainModel()
 				pEpochs.Release();
 				pMomentum.Release();
 				pOptimizer.Release();
-				//pFileName.Release();
+				pFileName.Release();
 
 				if (pValue)
 				{
