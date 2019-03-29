@@ -167,7 +167,7 @@ double MultiCharts::TrainModel()
 				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
 			}
 
-			std::string fileNameString(fileName);
+			std::string fileNameString(fileName, fileNameSize);
 			const char* d = fileNameString.c_str();
 
 			CPyObject pLearningRate = PyFloat_FromDouble(learningRate);
