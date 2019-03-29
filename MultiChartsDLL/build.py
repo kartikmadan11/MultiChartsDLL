@@ -6,7 +6,7 @@ import tensorflow as tf
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM, Dropout, GRU, Bidirectional
-from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.optimizers import SGD, RMSprop
 
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import MinMaxScaler
@@ -18,7 +18,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # Suppressing deprecated warnings
 tf.logging.set_verbosity(tf.logging.ERROR)
 
-def train(training_set, date, lr, scale, epochs):
+def train(training_set, date, lr = 0.1, scale = 0, epochs = 1, momentum = 10, optimizer = 0, fileName = "model"):
     if(type(training_set) == list):
         
         # Constructing a pandas dataframe for reusability and reference
@@ -65,7 +65,7 @@ def train(training_set, date, lr, scale, epochs):
         regressor.add(Dense(units=1))
 
         # Compiling the RNN
-        regressor.compile(optimizer='rmsprop',loss='mean_squared_error')
+        regressor.compile(optimizer=getOptimizer(optimizer, lr, momentum),loss='mean_squared_error')
         # Fitting to the training set
         regressor.fit(X_train, Y_train,epochs=2,batch_size=32)
 
@@ -73,3 +73,9 @@ def train(training_set, date, lr, scale, epochs):
     
     else:
         return 110
+
+def getOptimizer(optimizer, lr, momentum):
+    if optimizer == 0:
+        return RMSprop(lr = lr)
+    elif optimizer == 1:
+        return SGD(lr = lr, momentum = momentum)
