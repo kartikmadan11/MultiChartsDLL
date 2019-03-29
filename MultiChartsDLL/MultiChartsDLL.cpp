@@ -162,6 +162,7 @@ double MultiCharts::TrainModel()
 				dateAtPosI[DATE_SIZE - 1] = '\0';
 				std::string date(dateAtPosI);
 				const char* c = date.c_str();
+				delete[] dateAtPosI;
 
 				PyList_Append(pTrainingData, PyFloat_FromDouble(trainingData[i]));
 				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
