@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+import pickle
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM, Dropout, GRU, Bidirectional
@@ -55,6 +56,10 @@ def getScaledData(training_set, scale):
     sc = MinMaxScaler(feature_range=(0,1))
     training_set_scaled = sc.fit_transform(training_set)
     
+    pickle_out = open("scaler.pickle", "wb")
+    pickle.dump(sc, pickle_out)
+    pickle_out.close()
+
     # creating a data structure with 60 timesteps and 1 output
     # for each element of training set, we have 60 previous training set elements 
     X_train = []
