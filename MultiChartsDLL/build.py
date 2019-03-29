@@ -9,7 +9,7 @@ from tensorflow.keras.layers import Dense, LSTM, Dropout, GRU, Bidirectional
 from tensorflow.keras.optimizers import SGD
 
 from sklearn.metrics import mean_squared_error
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler  
 
 # Just disables the warning, doesn't enable AVX/FMA
 import os
@@ -18,7 +18,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # Suppressing deprecated warnings
 tf.logging.set_verbosity(tf.logging.ERROR)
 
-def train(training_set, date, lr, scale, epochs):
+def train(training_set, date, lr, scale, epochs, momentum, optimizer):
     if(type(training_set) == list):
         
         # Constructing a pandas dataframe for reusability and reference
@@ -69,7 +69,7 @@ def train(training_set, date, lr, scale, epochs):
         # Fitting to the training set
         regressor.fit(X_train, Y_train,epochs=2,batch_size=32)
 
-        return 100
+        return epochs
     
     else:
         return 110
