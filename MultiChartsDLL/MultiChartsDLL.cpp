@@ -178,7 +178,7 @@ double MultiCharts::TrainModel()
 			CPyObject pOptimizer = Py_BuildValue("i", optimizer);
 			CPyObject pFileName = PyUnicode_FromFormat("%s", d);
 
-			if (pTrainingData && pDate)
+			if (pTrainingData && pDate && pLearningRate && pScale && pEpochs && pMomentum && pOptimizer && pFileName)
 			{
 				// Receiving return value from the Train Function
 				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, pLearningRate, pScale, pEpochs, pMomentum, pOptimizer, pFileName, NULL);
