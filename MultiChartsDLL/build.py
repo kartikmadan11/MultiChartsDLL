@@ -51,12 +51,12 @@ def getLSTMSequential(X_train):
     
     return regressor
 
-def getScaledData(training_set, scale):
+def getScaledData(training_set, scale, fileName):
 
     sc = MinMaxScaler(feature_range=(0,1))
     training_set_scaled = sc.fit_transform(training_set)
     
-    pickle_out = open("scaler.pickle", "wb")
+    pickle_out = open(fileName + '_scaler.pickle', 'wb')
     pickle.dump(sc, pickle_out)
     pickle_out.close()
 
@@ -81,12 +81,12 @@ def train(training_set, date, lr, scale, epochs, momentum, optimizer, fileName):
         df = pd.DataFrame(data = training_set, columns = ['Feature'], index = date)
         df.index.names = ['Date']
         df.index = pd.to_datetime(df.index);
-        df.to_csv('dataframe.csv')
+        df.to_csv(fileName + '.csv')
 
         training_set = df.values
 
         # Scaling the training set
-        X_train, Y_train = getScaledData(training_set, scale)
+        X_train, Y_train = getScaledData(training_set, scale, fileName)
         
         # Constructing a stacked LSTM Sequential Model
         regressor = getLSTMSequential(X_train)
