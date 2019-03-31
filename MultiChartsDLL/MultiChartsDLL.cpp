@@ -42,10 +42,10 @@ void MultiCharts::DisposeMultiCharts()
 		delete[] volumeArray;
 		volumeArray = NULL;
 	}
-	if (this != NULL)
+	/*if (this != NULL)
 	{
 		delete this;
-	}
+	}*/
 }
 
 void MultiCharts::InitTrainingData(int size)
@@ -57,6 +57,17 @@ void MultiCharts::InitTrainingData(int size)
 void MultiCharts::SetTrainingData(double* trainingData)
 {
 	this->trainingData = trainingData;
+}
+
+void MultiCharts::InitPredictionData(int size)
+{
+	this->predictionDataSize = size;
+	this->predictionData = new double[size];
+}
+
+void MultiCharts::SetPredictionData(double * predictionData)
+{
+	this->predictionData = predictionData;
 }
 
 void MultiCharts::InitDateArray(int size)
@@ -74,6 +85,24 @@ void MultiCharts::SetDateArray(char *dateArray)
 			this->dateArray[i][j] = dateArray[j+k];
 		}
 		this->dateArray[i][DATE_SIZE - 1] = '\0';
+	}
+}
+
+void MultiCharts::InitPredictDateArray(int size)
+{
+	this->predictDateArraySize = size;
+	this->predictDateArray = new char[size][DATE_SIZE];
+}
+
+void MultiCharts::SetPredictDateArray(char *predictDateArray)
+{
+	for (int i = 0, k = 0; i < predictDateArraySize; i++, k += DATE_SIZE - 1)
+	{
+		for (int j = 0; j < DATE_SIZE - 1; j++)
+		{
+			this->predictDateArray[i][j] = predictDateArray[j + k];
+		}
+		this->predictDateArray[i][DATE_SIZE - 1] = '\0';
 	}
 }
 
@@ -125,6 +154,16 @@ void MultiCharts::SetOptimizer(int optimizer)
 void MultiCharts::SetMomentum(int momentum)
 {
 	this->momentum = momentum;
+}
+
+void MultiCharts::SetTestingPart(double testingPart)
+{
+	this->testingPart = testingPart;
+}
+
+void MultiCharts::SetTestingWeight(double testingWeight)
+{
+	this->testingWeight = testingWeight;
 }
 
 double MultiCharts::TrainModel()
@@ -216,6 +255,84 @@ double MultiCharts::TrainModel()
 	else
 	{
 		return 4.01;
+	}
+}
+
+double* MultiCharts::Predict()
+{
+	// Creating a Python Instance
+	CPyInstance pyInstance;
+
+	// Importing the .py module
+	CPyObject pModule = PyImport_ImportModule("build");
+
+	if (pModule)
+	{
+		// Importing the Train Function
+		CPyObject pFunc = PyObject_GetAttrString(pModule, "predict");
+
+		if (pFunc && PyCallable_Check(pFunc))
+		{
+			// Creating PyObjects Parameters for Train Function
+
+			//Python Lists for Training Data Values and Dates
+			CPyObject pPrediction = PyList_New(0);
+			CPyObject pDate = PyList_New(0);
+
+			for (int i = 0; i < trainingDataSize; i++)
+			{
+				char* dateAtPosI = new char[DATE_SIZE];
+				for (int j = 0; j < DATE_SIZE - 1; j++)
+				{
+					dateAtPosI[j] = dateArray[i][j];
+				}
+				dateAtPosI[DATE_SIZE - 1] = '\0';
+				std::string date(dateAtPosI);
+				const char* c = date.c_str();
+				delete[] dateAtPosI;
+
+				PyList_Append(pPrediction, PyFloat_FromDouble(trainingData[i]));
+				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
+			}
+
+			std::string fileNameString(fileName, fileNameSize);
+			const char* d = fileNameString.c_str();
+
+			CPyObject pFileName = PyUnicode_FromFormat("%s", d);
+
+			if (pPrediction && pDate)
+			{
+				// Receiving return value from the Train Function
+				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pPrediction, pDate, pFileName, NULL);
+
+				// Releasing Function and Parameter Objects
+				pFunc.Release();
+				pPrediction.Release();
+				pDate.Release();
+				pFileName.Release();
+
+				if (pValue)
+				{
+					return NULL;
+				}
+				else
+				{
+					return NULL;
+				}
+			}
+			else
+			{
+				return NULL;
+			}
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+	else
+	{
+		return NULL;
 	}
 }
 
@@ -345,5 +462,16 @@ void SetMomentum(MultiCharts* multiCharts, int momentum)
 
 double TrainModel(MultiCharts* multiCharts)
 {
-	return multiCharts->TrainModel();
+	if (multiCharts != NULL)
+	{
+		return multiCharts->TrainModel();
+	}
+}
+
+double* Predict(MultiCharts* multiCharts)
+{
+	if (multiCharts != NULL)
+	{
+		multiCharts->Predict();
+	}
 }
