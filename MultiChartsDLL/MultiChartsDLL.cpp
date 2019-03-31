@@ -300,7 +300,7 @@ double* MultiCharts::Predict()
 
 			CPyObject pFileName = PyUnicode_FromFormat("%s", d);
 
-			if (pPrediction && pDate)
+			if (pPrediction && pDate && pFileName)
 			{
 				// Receiving return value from the Train Function
 				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pPrediction, pDate, pFileName, NULL);
@@ -313,7 +313,20 @@ double* MultiCharts::Predict()
 
 				if (pValue)
 				{
-					return NULL;
+					if (PyList_Check(pValue))
+					{
+						int count = PyList_Size(pValue);
+						double* predictions = new double[count];
+						CPyObject pTemp;
+
+						for (int i = 0; i < count; i++)
+						{
+							pTemp = PyList_GetItem(pValue, i);
+							predictions[i] = (double)strtod(PyUnicode_AsUTF8(pTemp), NULL);
+						}
+
+						return predictions;
+					}
 				}
 				else
 				{
