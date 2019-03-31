@@ -21,7 +21,7 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 	
 	char* fileName;
 	int fileNameSize;
-	
+
 	double learningRate;
 	int epochs;
 	int scale;
@@ -29,17 +29,17 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 	int momentum;
 
 	public:
-  
+
 		MultiCharts();
 		~MultiCharts();
 		void DisposeMultiCharts();
-	
+
 		void InitTrainingData(int size);
 		void SetTrainingData(double* trainingData);
 
 		void InitDateArray(int size);
 		void SetDateArray(char *dateArray);
-	
+
 		void InitVolumeArray(int size);
 		void SetVolumeArray(long* volume);
 
