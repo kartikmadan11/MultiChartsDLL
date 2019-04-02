@@ -327,6 +327,10 @@ double* MultiCharts::Predict()
 
 						return predictions;
 					}
+					else
+					{
+						return NULL;
+					}
 				}
 				else
 				{
