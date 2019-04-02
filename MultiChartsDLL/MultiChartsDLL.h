@@ -13,14 +13,14 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 	double* trainingData;
 	int trainingDataSize;
 
-	double* predictionData;
-	int predictionDataSize;
+	double* testingData;
+	int testingDataSize;
 
 	char (*dateArray)[DATE_SIZE];
 	int dateArraySize;
 
-	char (*predictDateArray)[DATE_SIZE];
-	int predictDateArraySize;
+	char (*testDateArray)[DATE_SIZE];
+	int testDateArraySize;
 
 	long* volumeArray;
 	int volumeArraySize;
@@ -45,14 +45,14 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 		void InitTrainingData(int size);
 		void SetTrainingData(double* trainingData);
 
-		void InitPredictionData(int size);
-		void SetPredictionData(double* trainingData);
+		void InitTestingData(int size);
+		void SetTestingData(double* testingData);
 
 		void InitDateArray(int size);
 		void SetDateArray(char *dateArray);
 
-		void InitPredictDateArray(int size);
-		void SetPredictDateArray(char *predictDateArray);
+		void InitTestDateArray(int size);
+		void SetTestDateArray(char *testDateArray);
 
 		void InitVolumeArray(int size);
 		void SetVolumeArray(long* volume);
@@ -68,8 +68,8 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 		void SetTestingPart(double testingPart);
 		void SetTestingWeight(double testingWeight);
 
-
 		double TrainModel();
+		double TestModel();
 		double* Predict();
 };
 
@@ -99,4 +99,5 @@ extern "C" void SetOptimizer(MultiCharts* multiCharts, int optimizer);
 extern "C" void SetMomentum(MultiCharts* multiCharts, int momentum);
 
 extern "C" double TrainModel(MultiCharts* multiCharts);
+extern "C" double TestModel(MultiCharts* multiCharts);
 extern "C" double* Predict(MultiCharts* multiCharts);

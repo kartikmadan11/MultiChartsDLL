@@ -59,15 +59,15 @@ void MultiCharts::SetTrainingData(double* trainingData)
 	this->trainingData = trainingData;
 }
 
-void MultiCharts::InitPredictionData(int size)
+void MultiCharts::InitTestingData(int size)
 {
-	this->predictionDataSize = size;
-	this->predictionData = new double[size];
+	this->testingDataSize = size;
+	this->testingData = new double[size];
 }
 
-void MultiCharts::SetPredictionData(double * predictionData)
+void MultiCharts::SetTestingData(double * testingData)
 {
-	this->predictionData = predictionData;
+	this->testingData = testingData;
 }
 
 void MultiCharts::InitDateArray(int size)
@@ -88,21 +88,21 @@ void MultiCharts::SetDateArray(char *dateArray)
 	}
 }
 
-void MultiCharts::InitPredictDateArray(int size)
+void MultiCharts::InitTestDateArray(int size)
 {
-	this->predictDateArraySize = size;
-	this->predictDateArray = new char[size][DATE_SIZE];
+	this->testDateArraySize = size;
+	this->testDateArray = new char[size][DATE_SIZE];
 }
 
-void MultiCharts::SetPredictDateArray(char *predictDateArray)
+void MultiCharts::SetTestDateArray(char *testDateArray)
 {
-	for (int i = 0, k = 0; i < predictDateArraySize; i++, k += DATE_SIZE - 1)
+	for (int i = 0, k = 0; i < testDateArraySize; i++, k += DATE_SIZE - 1)
 	{
 		for (int j = 0; j < DATE_SIZE - 1; j++)
 		{
-			this->predictDateArray[i][j] = predictDateArray[j + k];
+			this->testDateArray[i][j] = testDateArray[j + k];
 		}
-		this->predictDateArray[i][DATE_SIZE - 1] = '\0';
+		this->testDateArray[i][DATE_SIZE - 1] = '\0';
 	}
 }
 
@@ -258,7 +258,7 @@ double MultiCharts::TrainModel()
 	}
 }
 
-double* MultiCharts::Predict()
+double MultiCharts::TestModel()
 {
 	// Creating a Python Instance
 	CPyInstance pyInstance;
@@ -268,18 +268,18 @@ double* MultiCharts::Predict()
 
 	if (pModule)
 	{
-		// Importing the Train Function
-		CPyObject pFunc = PyObject_GetAttrString(pModule, "predict");
+		// Importing the Predict Function
+		CPyObject pFunc = PyObject_GetAttrString(pModule, "test");
 
 		if (pFunc && PyCallable_Check(pFunc))
 		{
-			// Creating PyObjects Parameters for Train Function
+			// Creating PyObjects Parameters for Test Function
 
-			//Python Lists for Training Data Values and Dates
-			CPyObject pPrediction = PyList_New(0);
+			//Python Lists for Test Data Values and Dates
+			CPyObject pTestingData = PyList_New(0);
 			CPyObject pDate = PyList_New(0);
 
-			for (int i = 0; i < trainingDataSize; i++)
+			for (int i = 0; i < testingDataSize; i++)
 			{
 				char* dateAtPosI = new char[DATE_SIZE];
 				for (int j = 0; j < DATE_SIZE - 1; j++)
@@ -291,7 +291,7 @@ double* MultiCharts::Predict()
 				const char* c = date.c_str();
 				delete[] dateAtPosI;
 
-				PyList_Append(pPrediction, PyFloat_FromDouble(trainingData[i]));
+				PyList_Append(pTestingData, PyFloat_FromDouble(trainingData[i]));
 				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
 			}
 
@@ -300,15 +300,62 @@ double* MultiCharts::Predict()
 
 			CPyObject pFileName = PyUnicode_FromFormat("%s", d);
 
-			if (pPrediction && pDate && pFileName)
+			if (pTestingData && pDate && pFileName)
 			{
-				// Receiving return value from the Train Function
-				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pPrediction, pDate, pFileName, NULL);
+				// Receiving return value from the Test Function
+				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTestingData, pDate, pFileName, NULL);
 
 				// Releasing Function and Parameter Objects
 				pFunc.Release();
-				pPrediction.Release();
+				pTestingData.Release();
 				pDate.Release();
+				pFileName.Release();
+			}
+			else
+			{
+				return 0.01;
+			}
+		}
+		else
+		{
+			return 0.02;
+		}
+	}
+	else
+	{
+		return 0.03;
+	}
+}
+
+double* MultiCharts::Predict()
+{
+	// Creating a Python Instance
+	CPyInstance pyInstance;
+
+	// Importing the .py module
+	CPyObject pModule = PyImport_ImportModule("build");
+
+	if (pModule)
+	{
+		// Importing the Predict Function
+		CPyObject pFunc = PyObject_GetAttrString(pModule, "predict");
+
+		if (pFunc && PyCallable_Check(pFunc))
+		{
+			// Creating PyObjects Parameters for Predict Function
+			
+			std::string fileNameString(fileName, fileNameSize);
+			const char* d = fileNameString.c_str();
+
+			CPyObject pFileName = PyUnicode_FromFormat("%s", d);
+
+			if (pFileName)
+			{
+				// Receiving return value from the Train Function
+				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pFileName, NULL);
+
+				// Releasing Function and Parameter Objects
+				pFunc.Release();
 				pFileName.Release();
 
 				if (pValue)
@@ -483,12 +530,23 @@ double TrainModel(MultiCharts* multiCharts)
 	{
 		return multiCharts->TrainModel();
 	}
+	return 10.1;
+}
+
+double TestModel(MultiCharts* multiCharts)
+{
+	if (multiCharts != NULL)
+	{
+		return multiCharts->TestModel();
+	}
+	return 10.2;
 }
 
 double* Predict(MultiCharts* multiCharts)
 {
 	if (multiCharts != NULL)
 	{
-		multiCharts->Predict();
+		return multiCharts->Predict();
 	}
+	return NULL;
 }
