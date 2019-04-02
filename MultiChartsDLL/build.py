@@ -8,6 +8,7 @@ import pickle
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM, Dropout, GRU, Bidirectional
 from tensorflow.keras.optimizers import SGD, RMSprop
+from tensorflow.keras.models import load_model
 
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import MinMaxScaler  
@@ -51,12 +52,12 @@ def getLSTMSequential(X_train):
     
     return regressor
 
-def getScaledData(training_set, scale, fileName):
+def getScaledData(training_set, scale, file_name):
 
     sc = MinMaxScaler(feature_range=(0,1))
     training_set_scaled = sc.fit_transform(training_set)
     
-    pickle_out = open(fileName + '_scaler.pickle', 'wb')
+    pickle_out = open(file_name + '_scaler.pickle', 'wb')
     pickle.dump(sc, pickle_out)
     pickle_out.close()
 
@@ -74,19 +75,19 @@ def getScaledData(training_set, scale, fileName):
 
     return X_train, Y_train
 
-def train(training_set, date, lr, scale, epochs, momentum, optimizer, fileName):
+def train(training_set, date, lr, scale, epochs, momentum, optimizer, file_name):
     if(type(training_set) == list):
         
         # Constructing a pandas dataframe for reusability and reference
         df = pd.DataFrame(data = training_set, columns = ['Feature'], index = date)
         df.index.names = ['Date']
-        df.index = pd.to_datetime(df.index);
-        df.to_csv(fileName + '.csv')
+        df.index = pd.to_datetime(df.index)
+        df.to_csv(file_name + '.csv')
 
         training_set = df.values
 
         # Scaling the training set
-        X_train, Y_train = getScaledData(training_set, scale, fileName)
+        X_train, Y_train = getScaledData(training_set, scale, file_name)
         
         # Constructing a stacked LSTM Sequential Model
         regressor = getLSTMSequential(X_train)
@@ -98,7 +99,7 @@ def train(training_set, date, lr, scale, epochs, momentum, optimizer, fileName):
         regressor.fit(X_train, Y_train,epochs = epochs,batch_size=32)
 
         #Saving trained model
-        regressor.save(fileName + '.h5')
+        regressor.save(file_name + '.h5')
 
         #Deleting model instance
         del regressor
@@ -107,3 +108,36 @@ def train(training_set, date, lr, scale, epochs, momentum, optimizer, fileName):
     
     else:
         return 110
+
+def test(testing_set, date, file_name):
+    if(type(testing_set) == list):
+
+        # Constructing a pandas dataframe for reusability and reference
+        df = pd.DataFrame(data = testing_set, columns = ['Feature'], index = date)
+        df.index.names = ['Date']
+        df.index = pd.to_datetime(df.index)
+
+        dataset = pd.read_csv(file_name + '.csv')
+
+        regressor = load_model(file_name + '.h5')
+
+        file = open(file_name + '_scaler.pickle', 'rb')
+        scaler = pickle.load(file)
+
+        # Now to get the test set ready in a similar way as the training set.
+        dataset_total = pd.concat((dataset.index,df.index),axis=0)
+        inputs = dataset_total[len(dataset_total)-len(test_set) - 60:].values
+        inputs = inputs.reshape(-1,1)
+        inputs  = scaler.transform(inputs)
+
+
+def predict(file_name):
+    if(type(X) == list):
+
+        dataset = pd.read_csv(file_name + '.csv', index_col='Date', parse_dates=['Date'])
+
+        regressor = load_model(file_name + '.h5')
+
+        file = open(file_name + '_scaler.pickle', 'rb')
+        scaler = pickle.load(file)
+        
