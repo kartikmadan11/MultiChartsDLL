@@ -84,7 +84,13 @@ extern "C" void InitTrainingData(MultiCharts* multiCharts, int size);
 extern "C" void SetTrainingData(MultiCharts* multiCharts, double* trainingData);
 
 extern "C" void InitDateArray(MultiCharts* multiCharts, int size);
-extern "C" void SetDateArray(MultiCharts* multiCharts, char *dateArray);
+extern "C" void SetDateArray(MultiCharts* multiCharts, char* dateArray);
+
+extern "C" void InitTestingData(MultiCharts* multiCharts, int size);
+extern "C" void SetTestingData(MultiCharts* multiCharts, double* testingData);
+
+extern "C" void InitTestDateArray(MultiCharts* multiCharts, int size);
+extern "C" void SetTestDateArray(MultiCharts* multiCharts, char* testDateArray);
 
 extern "C" void InitVolumeArray(MultiCharts* multiCharts, int size);
 extern "C" void SetVolumeArray(MultiCharts* multiCharts, long* volumeArray);

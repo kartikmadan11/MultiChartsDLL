@@ -444,11 +444,43 @@ void InitDateArray(MultiCharts* multiCharts, int size)
 	}
 }
 
-void SetDateArray(MultiCharts* multiCharts, char *dateArray)
+void SetDateArray(MultiCharts* multiCharts, char* dateArray)
 {
 	if (multiCharts != NULL)
 	{
 		multiCharts->SetDateArray(dateArray);
+	}
+}
+
+void InitTestingData(MultiCharts* multiCharts, int size)
+{
+	if (multiCharts != NULL)
+	{
+		multiCharts->InitTestingData(size);
+	}
+}
+
+void SetTestingData(MultiCharts* multiCharts, double* testingData)
+{
+	if (multiCharts != NULL)
+	{
+		multiCharts->SetTestingData(testingData);
+	}
+}
+
+void InitTestDateArray(MultiCharts* multiCharts, int size)
+{
+	if (multiCharts != NULL)
+	{
+		multiCharts->InitTestDateArray(size);
+	}
+}
+
+void SetTestDateArray(MultiCharts* multiCharts, char* testDateArray)
+{
+	if (multiCharts != NULL)
+	{
+		multiCharts->SetTestDateArray(testDateArray);
 	}
 }
 
@@ -468,7 +500,7 @@ void SetVolumeArray(MultiCharts* multiCharts, long * volumeArray)
 	}
 }
 
-void InitFileName(MultiCharts * multiCharts, int size)
+void InitFileName(MultiCharts* multiCharts, int size)
 {
 	if (multiCharts != NULL)
 	{
@@ -476,7 +508,7 @@ void InitFileName(MultiCharts * multiCharts, int size)
 	}
 }
 
-void SetFileName(MultiCharts* multiCharts, char * fileName)
+void SetFileName(MultiCharts* multiCharts, char* fileName)
 {
 	if (multiCharts != NULL)
 	{
