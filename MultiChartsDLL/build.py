@@ -126,11 +126,26 @@ def test(testing_set, date, file_name):
         file = open(file_name + '_scaler.pickle', 'rb')
         scaler = pickle.load(file)
 
-        predictions = []
-        for i in range(df.shape[0]):
-            predictions.append(regressor.predict(scaler.transform(pd.concat([prev_dataset.tail(window_size - i), predictions[:i]].values))))
+        # Now to get the test set ready in a similar way as the training set.
+        dataset_total = pd.concat((prev_dataset, df),axis=0)
+        dataset_total.to_csv(file_name + '.csv')
+
+        inputs = dataset_total[len(dataset_total)-len(testing_set) - window_size:]['Feature'].values
+        inputs = inputs.reshape(-1,1)
+        inputs  = sc.transform(inputs)
+
+        # Preparing X_test and predicting the prices
+        X_test = []
+        for i in range(window_size, inputs.shape[0]):
+            X_test.append(inputs[i - window_size:i,0])
+        X_test = np.array(X_test)
+        X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))
         
-        return 0
+        predicted_stock_price = regressor.predict(X_test)
+        predicted_stock_price = sc.inverse_transform(predicted_stock_price)
+
+    else:
+        return -1
 
 def predict(file_name):
     if(type(X) == list):
