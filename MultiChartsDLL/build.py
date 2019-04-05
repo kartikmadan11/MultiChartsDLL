@@ -20,6 +20,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # Suppressing deprecated warnings
 tf.logging.set_verbosity(tf.logging.ERROR)
 
+window_size = 60
+
 def getOptimizer(optimizer, lr, momentum):
     if optimizer == 0:
         return RMSprop(lr = lr)
@@ -61,12 +63,12 @@ def getScaledData(training_set, scale, file_name):
     pickle.dump(sc, pickle_out)
     pickle_out.close()
 
-    # creating a data structure with 60 timesteps and 1 output
-    # for each element of training set, we have 60 previous training set elements 
+    # creating a data structure with window_size timesteps and 1 output
+    # for each element of training set, we have window_size previous training set elements 
     X_train = []
     Y_train = []
-    for i in range(60,training_set_scaled.shape[0]):
-        X_train.append(training_set_scaled[i-60:i,0])
+    for i in range(window_size,training_set_scaled.shape[0]):
+        X_train.append(training_set_scaled[i-window_size:i,0])
         Y_train.append(training_set_scaled[i,0])
     X_train, Y_train = np.array(X_train), np.array(Y_train)
 
@@ -117,19 +119,18 @@ def test(testing_set, date, file_name):
         df.index.names = ['Date']
         df.index = pd.to_datetime(df.index)
 
-        dataset = pd.read_csv(file_name + '.csv')
+        prev_dataset = pd.read_csv(file_name + '.csv')
 
         regressor = load_model(file_name + '.h5')
 
         file = open(file_name + '_scaler.pickle', 'rb')
         scaler = pickle.load(file)
 
-        # Now to get the test set ready in a similar way as the training set.
-        dataset_total = pd.concat((dataset.index,df.index),axis=0)
-        inputs = dataset_total[len(dataset_total)-len(test_set) - 60:].values
-        inputs = inputs.reshape(-1,1)
-        inputs  = scaler.transform(inputs)
-
+        predictions = []
+        for i in range(df.shape[0]):
+            predictions.append(regressor.predict(scaler.transform(pd.concat([prev_dataset.tail(window_size - i), predictions[:i]].values))))
+        
+        return 0
 
 def predict(file_name):
     if(type(X) == list):
@@ -139,5 +140,4 @@ def predict(file_name):
         regressor = load_model(file_name + '.h5')
 
         file = open(file_name + '_scaler.pickle', 'rb')
-        scaler = pickle.load(file)
-        
+        scaler = pickle.load(file)        
