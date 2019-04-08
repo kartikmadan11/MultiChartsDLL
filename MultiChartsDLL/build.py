@@ -132,7 +132,7 @@ def test(testing_set, date, file_name):
 
         inputs = dataset_total[len(dataset_total)-len(testing_set) - window_size:]['Feature'].values
         inputs = inputs.reshape(-1,1)
-        inputs  = sc.transform(inputs)
+        inputs  = scaler.transform(inputs)
 
         # Preparing X_test and predicting the prices
         X_test = []
@@ -142,7 +142,9 @@ def test(testing_set, date, file_name):
         X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))
         
         predicted_stock_price = regressor.predict(X_test)
-        predicted_stock_price = sc.inverse_transform(predicted_stock_price)
+        predicted_stock_price = scaler.inverse_transform(predicted_stock_price)
+
+        return predicted_stock_price
 
     else:
         return -1
