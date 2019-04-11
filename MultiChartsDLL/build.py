@@ -9,9 +9,12 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM, Dropout, GRU, Bidirectional
 from tensorflow.keras.optimizers import SGD, RMSprop
 from tensorflow.keras.models import load_model
+from tensorflow.keras import backend as K
 
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import MinMaxScaler  
+
+import matplotlib.pyplot as plt
 
 # Just disables the warning, doesn't enable AVX/FMA
 import os
@@ -77,6 +80,20 @@ def getScaledData(training_set, scale, file_name):
 
     return X_train, Y_train
 
+def save_plot(test,predicted, file_name):
+    plt.plot(test, color='red',label='Real Stock Price')
+    plt.plot(predicted, color='blue',label='Predicted Stock Price')
+    plt.title('Stock Price Prediction')
+    plt.xlabel('Time')
+    plt.ylabel('Stock Price')
+    plt.legend()
+    plt.savefig(file_name + '.jpg')
+
+def r2_score(y_true, y_pred):
+    SS_res =  K.sum(K.square(y_true - y_pred)) 
+    SS_tot = K.sum(K.square(y_true - K.mean(y_true))) 
+    return ( 1 - SS_res/(SS_tot + K.epsilon()) )
+    
 def train(training_set, date, lr, scale, epochs, momentum, optimizer, file_name):
     if(type(training_set) == list):
         
@@ -88,14 +105,14 @@ def train(training_set, date, lr, scale, epochs, momentum, optimizer, file_name)
 
         training_set = df.values
 
-        # Scaling the training set
+        # Scaling and preprocessing the training set
         X_train, Y_train = getScaledData(training_set, scale, file_name)
         
         # Constructing a stacked LSTM Sequential Model
         regressor = getLSTMSequential(X_train)
 
         # Compiling the RNN
-        regressor.compile(optimizer=getOptimizer(optimizer, lr, momentum),loss='mean_squared_error')
+        regressor.compile(optimizer=getOptimizer(optimizer, lr, momentum), loss='mean_squared_error', metrics=['mse',r2_score])
         
         # Fitting to the training set
         regressor.fit(X_train, Y_train,epochs = epochs,batch_size=32)
@@ -111,23 +128,25 @@ def train(training_set, date, lr, scale, epochs, momentum, optimizer, file_name)
     else:
         return 110
 
-def test(testing_set, date, file_name):
+def test(testing_set, date, testing_weight ,file_name):
     if(type(testing_set) == list):
 
         # Constructing a pandas dataframe for reusability and reference
         df = pd.DataFrame(data = testing_set, columns = ['Feature'], index = date)
         df.index.names = ['Date']
         df.index = pd.to_datetime(df.index)
-
-        prev_dataset = pd.read_csv(file_name + '.csv')
-
-        regressor = load_model(file_name + '.h5')
+        test_set = df['Feature'].values
+        
+        prev_dataset = pd.read_csv(file_name + '.csv', index_col = 'Date', parse_dates=['Date'])
+        
+        regressor = load_model(file_name + '.h5', custom_objects={'r2_score':r2_score})
 
         file = open(file_name + '_scaler.pickle', 'rb')
         scaler = pickle.load(file)
+        file.close()
 
         # Now to get the test set ready in a similar way as the training set.
-        dataset_total = pd.concat((prev_dataset, df),axis=0)
+        dataset_total = pd.concat((prev_dataset, df),axis=0, sort=False)
         dataset_total.to_csv(file_name + '.csv')
 
         inputs = dataset_total[len(dataset_total)-len(testing_set) - window_size:]['Feature'].values
@@ -144,8 +163,9 @@ def test(testing_set, date, file_name):
         predicted_stock_price = regressor.predict(X_test)
         predicted_stock_price = scaler.inverse_transform(predicted_stock_price)
 
-        return predicted_stock_price
-
+        save_plot(test_set, predicted_stock_price, file_name)
+        
+        return model.evaluate(X_test, predicted_stock_price)[1]
     else:
         return -1
 
