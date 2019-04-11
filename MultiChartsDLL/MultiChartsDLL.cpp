@@ -299,8 +299,9 @@ double MultiCharts::TestModel()
 			const char* d = fileNameString.c_str();
 
 			CPyObject pFileName = PyUnicode_FromFormat("%s", d);
-
-			if (pTestingData && pDate && pFileName)
+			CPyObject pTestingWeight = PyFloat_FromDouble(testingWeight);
+			
+			if (pTestingData && pDate && pTestingWeight && pFileName)
 			{
 				// Receiving return value from the Test Function
 				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTestingData, pDate, pFileName, NULL);
@@ -309,7 +310,13 @@ double MultiCharts::TestModel()
 				pFunc.Release();
 				pTestingData.Release();
 				pDate.Release();
+				pTestingWeight.Release();
 				pFileName.Release();
+
+				if (pValue)
+				{
+					return PyFloat_AsDouble(pValue);
+				}
 			}
 			else
 			{
