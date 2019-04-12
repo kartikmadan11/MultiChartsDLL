@@ -165,7 +165,9 @@ def test(testing_set, date, testing_weight ,file_name):
 
         save_plot(test_set, predicted_stock_price, file_name)
         
-        return model.evaluate(X_test, predicted_stock_price)[1]
+        del regressor
+        
+        return regressor.evaluate(X_test, predicted_stock_price)[1]
     else:
         return -1
 

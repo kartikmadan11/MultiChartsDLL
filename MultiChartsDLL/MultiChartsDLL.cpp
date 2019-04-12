@@ -168,8 +168,16 @@ void MultiCharts::SetTestingWeight(double testingWeight)
 
 double MultiCharts::TrainModel()
 {
+	if ((bool)Py_IsInitialized())
+	{
+		Py_FinalizeEx();
+	}
+
 	// Creating a Python Instance
 	CPyInstance pyInstance;
+
+	PyGILState_STATE gstate;
+	gstate = PyGILState_Ensure();
 
 	//PyThreadState *_save;
 	//_save = PyEval_SaveThread();
@@ -235,7 +243,9 @@ double MultiCharts::TrainModel()
 
 				if (pValue)
 				{
-					return PyFloat_AsDouble(pValue);
+					double returnVal = PyFloat_AsDouble(pValue);
+					PyGILState_Release(gstate);
+					return returnVal;
 				}
 				else
 				{
@@ -256,19 +266,28 @@ double MultiCharts::TrainModel()
 	{
 		return 4.01;
 	}
+	
 }
 
 double MultiCharts::TestModel()
 {
+	if ((bool)Py_IsInitialized())
+	{
+		Py_FinalizeEx();
+	}
+
 	// Creating a Python Instance
 	CPyInstance pyInstance;
+
+	PyGILState_STATE gstate;
+	gstate = PyGILState_Ensure();
 
 	// Importing the .py module
 	CPyObject pModule = PyImport_ImportModule("build");
 
 	if (pModule)
 	{
-		// Importing the Predict Function
+		// Importing the Test Function
 		CPyObject pFunc = PyObject_GetAttrString(pModule, "test");
 
 		if (pFunc && PyCallable_Check(pFunc))
@@ -304,7 +323,7 @@ double MultiCharts::TestModel()
 			if (pTestingData && pDate && pTestingWeight && pFileName)
 			{
 				// Receiving return value from the Test Function
-				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTestingData, pDate, pFileName, NULL);
+				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTestingData, pDate, pTestingWeight, pFileName, NULL);
 
 				// Releasing Function and Parameter Objects
 				pFunc.Release();
@@ -315,22 +334,28 @@ double MultiCharts::TestModel()
 
 				if (pValue)
 				{
-					return PyFloat_AsDouble(pValue);
+					double returnVal = PyFloat_AsDouble(pValue);
+					PyGILState_Release(gstate);
+					return returnVal;
+				}
+				else
+				{
+					return 0.01;
 				}
 			}
 			else
 			{
-				return 0.01;
+				return 0.02;
 			}
 		}
 		else
 		{
-			return 0.02;
+			return 0.03;
 		}
 	}
 	else
 	{
-		return 0.03;
+		return 0.04;
 	}
 }
 
