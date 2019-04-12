@@ -184,8 +184,7 @@ double MultiCharts::TrainModel()
 	//PyEval_RestoreThread(_save);
 
 	// Importing the .py module
-	CPyObject pModule = PyImport_ImportModule("build");
-
+	CPyObject pModule = PyImport_ImportModule("build");	
 	if (pModule)
 	{
 		// Importing the Train Function
@@ -211,8 +210,14 @@ double MultiCharts::TrainModel()
 				const char* c = date.c_str();
 				delete[] dateAtPosI;
 
-				PyList_Append(pTrainingData, PyFloat_FromDouble(trainingData[i]));
-				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
+				CPyObject pTrainEle = PyFloat_FromDouble(trainingData[i]);
+				CPyObject pDateEle = PyUnicode_FromFormat("%s", c);
+
+				PyList_Append(pTrainingData, pTrainEle);
+				PyList_Append(pDate, pDateEle);
+
+				pTrainEle.Release();
+				pDateEle.Release();
 			}
 
 			std::string fileNameString(fileName, fileNameSize);
@@ -244,6 +249,8 @@ double MultiCharts::TrainModel()
 				if (pValue)
 				{
 					double returnVal = PyFloat_AsDouble(pValue);
+					pValue.Release();
+					pModule.Release();
 					PyGILState_Release(gstate);
 					return returnVal;
 				}
@@ -310,15 +317,21 @@ double MultiCharts::TestModel()
 				const char* c = date.c_str();
 				delete[] dateAtPosI;
 
-				PyList_Append(pTestingData, PyFloat_FromDouble(trainingData[i]));
-				PyList_Append(pDate, PyUnicode_FromFormat("%s", c));
+				CPyObject pTestEle = PyFloat_FromDouble(testingData[i]);
+				CPyObject pDateEle = PyUnicode_FromFormat("%s", c);
+
+				PyList_Append(pTestingData, pTestEle);
+				PyList_Append(pDate, pDateEle);
+
+				pTestEle.Release();
+				pDateEle.Release();
 			}
 
 			std::string fileNameString(fileName, fileNameSize);
 			const char* d = fileNameString.c_str();
 
-			CPyObject pFileName = PyUnicode_FromFormat("%s", d);
 			CPyObject pTestingWeight = PyFloat_FromDouble(testingWeight);
+			CPyObject pFileName = PyUnicode_FromFormat("%s", d);
 			
 			if (pTestingData && pDate && pTestingWeight && pFileName)
 			{
@@ -336,6 +349,7 @@ double MultiCharts::TestModel()
 				{
 					double returnVal = PyFloat_AsDouble(pValue);
 					PyGILState_Release(gstate);
+					pModule.Release();
 					return returnVal;
 				}
 				else
