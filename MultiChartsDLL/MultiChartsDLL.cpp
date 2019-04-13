@@ -19,6 +19,12 @@ MultiCharts::~MultiCharts() { }
 
 void MultiCharts::DisposeMultiCharts()
 {
+	if ((bool)Py_IsInitialized)
+	{
+		int _ = Py_FinalizeEx();
+		Py_Finalize();
+	}
+
 	if (trainingData != NULL)
 	{
 		delete[] trainingData;
@@ -29,6 +35,16 @@ void MultiCharts::DisposeMultiCharts()
 	{
 		delete[] dateArray;
 		dateArray = NULL;
+	}
+
+	if (testingData != NULL)
+	{
+		delete[] testingData;
+	}
+
+	if (testDateArray != NULL)
+	{
+		delete[] testDateArray;
 	}
 
 	if (fileName != NULL)
@@ -176,8 +192,7 @@ double MultiCharts::TrainModel()
 	// Creating a Python Instance
 	CPyInstance pyInstance;
 
-	PyGILState_STATE gstate;
-	gstate = PyGILState_Ensure();
+	PyGILState_STATE gstate = PyGILState_Ensure();
 
 	//PyThreadState *_save;
 	//_save = PyEval_SaveThread();
@@ -235,8 +250,7 @@ double MultiCharts::TrainModel()
 				// Receiving return value from the Train Function
 				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, pLearningRate, pScale, pEpochs, pMomentum, pOptimizer, pFileName, NULL);
 
-				// Releasing Function and Parameter Objects
-				pFunc.Release();
+				// Decreasing Reference counts for Function and Parameter Objects
 				pTrainingData.Release();
 				pDate.Release();
 				pLearningRate.Release();
@@ -245,6 +259,7 @@ double MultiCharts::TrainModel()
 				pMomentum.Release();
 				pOptimizer.Release();
 				pFileName.Release();
+				pFunc.Release();
 
 				if (pValue)
 				{
@@ -256,24 +271,41 @@ double MultiCharts::TrainModel()
 				}
 				else
 				{
+					pModule.Release();
+					PyGILState_Release(gstate);
 					return 1.01;
 				}
 			}
 			else
 			{
+				pTrainingData.Release();
+				pDate.Release();
+				pLearningRate.Release();
+				pScale.Release();
+				pEpochs.Release();
+				pMomentum.Release();
+				pOptimizer.Release();
+				pFileName.Release();
+				pFunc.Release();
+				pModule.Release();
+				PyGILState_Release(gstate);
 				return 2.01;
 			}
 		}
 		else
 		{
+			pFunc.Release();
+			pModule.Release();
+			PyGILState_Release(gstate);
 			return 3.01;
 		}
 	}
 	else
 	{
+		pModule.Release();
+		PyGILState_Release(gstate);
 		return 4.01;
 	}
-	
 }
 
 double MultiCharts::TestModel()
@@ -338,12 +370,12 @@ double MultiCharts::TestModel()
 				// Receiving return value from the Test Function
 				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTestingData, pDate, pTestingWeight, pFileName, NULL);
 
-				// Releasing Function and Parameter Objects
-				pFunc.Release();
+				// Decreasing reference count of Function and Parameter Objects
 				pTestingData.Release();
 				pDate.Release();
 				pTestingWeight.Release();
 				pFileName.Release();
+				pFunc.Release();
 
 				if (pValue)
 				{
@@ -354,21 +386,35 @@ double MultiCharts::TestModel()
 				}
 				else
 				{
+					pModule.Release();
+					PyGILState_Release(gstate);
 					return 0.01;
 				}
 			}
 			else
 			{
+				pTestingData.Release();
+				pDate.Release();
+				pTestingWeight.Release();
+				pFileName.Release();
+				pFunc.Release();
+				pModule.Release();
+				PyGILState_Release(gstate);
 				return 0.02;
 			}
 		}
 		else
 		{
+			pFunc.Release();
+			pModule.Release();
+			PyGILState_Release(gstate);
 			return 0.03;
 		}
 	}
 	else
 	{
+		pModule.Release();
+		PyGILState_Release(gstate);
 		return 0.04;
 	}
 }
@@ -538,7 +584,7 @@ void InitVolumeArray(MultiCharts* multiCharts, int size)
 	}
 }
 
-void SetVolumeArray(MultiCharts* multiCharts, long * volumeArray)
+void SetVolumeArray(MultiCharts* multiCharts, long* volumeArray)
 {
 	if (multiCharts != NULL)
 	{

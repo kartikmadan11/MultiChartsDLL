@@ -15,6 +15,7 @@ public:
 	~CPyInstance()
 	{
 		Py_Finalize();
+		Py_FinalizeEx();
 	}
 };
 
