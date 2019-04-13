@@ -89,32 +89,32 @@ void MultiCharts::SetTestingData(double * testingData)
 void MultiCharts::InitDateArray(int size)
 {
 	this->dateArraySize = size;
-	//this->dateArray = new char[size][DATE_SIZE + 1];
+	this->dateArray = new char[size][DATE_SIZE];
 }
 
 void MultiCharts::SetDateArray(char *dateArray)
 {
-	for (int i = 0, k = 0; i < dateArraySize; i++, k+=DATE_SIZE)
+	for (int i = 0, k = 0; i < dateArraySize; i++, k += DATE_SIZE - 1)
 	{
-		for (int j = 0; j < DATE_SIZE; j++)
+		for (int j = 0; j < DATE_SIZE - 1; j++)
 		{
-			this->dateArray[i][j] = dateArray[j+k];
+			this->dateArray[i][j] = dateArray[j + k];
 		}
-		this->dateArray[i][DATE_SIZE] = '\0';
+		this->dateArray[i][DATE_SIZE - 1] = '\0';
 	}
 }
 
 void MultiCharts::InitTestDateArray(int size)
 {
 	this->testDateArraySize = size;
-	//this->testDateArray = new char[size][DATE_SIZE + 1];
+	this->testDateArray = new char[size][DATE_SIZE];
 }
 
 void MultiCharts::SetTestDateArray(char *testDateArray)
 {
-	for (int i = 0, k = 0; i < testDateArraySize; i++, k += DATE_SIZE)
+	for (int i = 0, k = 0; i < testDateArraySize; i++, k += DATE_SIZE - 1)
 	{
-		for (int j = 0; j < DATE_SIZE; j++)
+		for (int j = 0; j < DATE_SIZE - 1; j++)
 		{
 			this->testDateArray[i][j] = testDateArray[j + k];
 		}
@@ -199,7 +199,7 @@ double MultiCharts::TrainModel()
 	//PyEval_RestoreThread(_save);
 
 	// Importing the .py module
-	CPyObject pModule = PyImport_ImportModule("build");	
+	CPyObject pModule = PyImport_ImportModule("build");
 	if (pModule)
 	{
 		// Importing the Train Function
@@ -267,14 +267,12 @@ double MultiCharts::TrainModel()
 					pValue.Release();
 					pModule.Release();
 					PyGILState_Release(gstate);
-					pyInstance.~CPyInstance();
 					return returnVal;
 				}
 				else
 				{
 					pModule.Release();
 					PyGILState_Release(gstate);
-					pyInstance.~CPyInstance();
 					return 1.01;
 				}
 			}
@@ -291,7 +289,6 @@ double MultiCharts::TrainModel()
 				pFunc.Release();
 				pModule.Release();
 				PyGILState_Release(gstate);
-				pyInstance.~CPyInstance();
 				return 2.01;
 			}
 		}
@@ -300,7 +297,6 @@ double MultiCharts::TrainModel()
 			pFunc.Release();
 			pModule.Release();
 			PyGILState_Release(gstate);
-			pyInstance.~CPyInstance();
 			return 3.01;
 		}
 	}
@@ -368,7 +364,7 @@ double MultiCharts::TestModel()
 
 			CPyObject pTestingWeight = PyFloat_FromDouble(testingWeight);
 			CPyObject pFileName = PyUnicode_FromFormat("%s", d);
-			
+
 			if (pTestingData && pDate && pTestingWeight && pFileName)
 			{
 				// Receiving return value from the Test Function
@@ -384,16 +380,14 @@ double MultiCharts::TestModel()
 				if (pValue)
 				{
 					double returnVal = PyFloat_AsDouble(pValue);
-					pModule.Release();
 					PyGILState_Release(gstate);
-					pyInstance.~CPyInstance();
+					pModule.Release();
 					return returnVal;
 				}
 				else
 				{
 					pModule.Release();
 					PyGILState_Release(gstate);
-					pyInstance.~CPyInstance();
 					return 0.01;
 				}
 			}
@@ -406,7 +400,6 @@ double MultiCharts::TestModel()
 				pFunc.Release();
 				pModule.Release();
 				PyGILState_Release(gstate);
-				pyInstance.~CPyInstance();
 				return 0.02;
 			}
 		}
@@ -415,7 +408,6 @@ double MultiCharts::TestModel()
 			pFunc.Release();
 			pModule.Release();
 			PyGILState_Release(gstate);
-			pyInstance.~CPyInstance();
 			return 0.03;
 		}
 	}
@@ -423,7 +415,6 @@ double MultiCharts::TestModel()
 	{
 		pModule.Release();
 		PyGILState_Release(gstate);
-		pyInstance.~CPyInstance();
 		return 0.04;
 	}
 }
@@ -444,7 +435,7 @@ double* MultiCharts::Predict()
 		if (pFunc && PyCallable_Check(pFunc))
 		{
 			// Creating PyObjects Parameters for Predict Function
-			
+
 			std::string fileNameString(fileName, fileNameSize);
 			const char* d = fileNameString.c_str();
 
@@ -463,7 +454,7 @@ double* MultiCharts::Predict()
 				{
 					if (PyList_Check(pValue))
 					{
-						Py_ssize_t count = PyList_Size(pValue);
+						int count = PyList_Size(pValue);
 						double* predictions = new double[count];
 						CPyObject pTemp;
 
@@ -531,7 +522,7 @@ void InitTrainingData(MultiCharts* multiCharts, int size)
 
 void SetTrainingData(MultiCharts* multiCharts, double* trainingData)
 {
-	if (multiCharts != NULL) 
+	if (multiCharts != NULL)
 	{
 		multiCharts->SetTrainingData(trainingData);
 	}
