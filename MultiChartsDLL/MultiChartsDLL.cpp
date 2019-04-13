@@ -75,6 +75,11 @@ void MultiCharts::SetTrainingData(double* trainingData)
 	this->trainingData = trainingData;
 }
 
+void MultiCharts::SetTrainingDate(long* trainingDate)
+{
+	this->trainingDate = trainingDate;
+}
+
 void MultiCharts::InitTestingData(int size)
 {
 	this->testingDataSize = size;
@@ -525,6 +530,14 @@ void SetTrainingData(MultiCharts* multiCharts, double* trainingData)
 	if (multiCharts != NULL) 
 	{
 		multiCharts->SetTrainingData(trainingData);
+	}
+}
+
+void SetTrainingDate(MultiCharts* multiCharts, long* trainingDate)
+{
+	if (multiCharts != NULL)
+	{
+		multiCharts->SetTrainingDate(trainingDate);
 	}
 }
 

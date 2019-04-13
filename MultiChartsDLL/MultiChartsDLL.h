@@ -16,6 +16,8 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 	double* testingData;
 	int testingDataSize;
 
+	long* trainingDate;
+
 	char (*dateArray)[DATE_SIZE];
 	int dateArraySize;
 
@@ -47,6 +49,8 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 
 		void InitTestingData(int size);
 		void SetTestingData(double* testingData);
+
+		void SetTrainingDate(long* trainingDate);
 
 		void InitDateArray(int size);
 		void SetDateArray(char *dateArray);
@@ -82,6 +86,8 @@ extern "C" void DisposeMultiCharts(MultiCharts* multiCharts);
 
 extern "C" void InitTrainingData(MultiCharts* multiCharts, int size);
 extern "C" void SetTrainingData(MultiCharts* multiCharts, double* trainingData);
+
+extern "C" void SetTrainingDate(MultiCharts* multiCharts, long* trainingDate);
 
 extern "C" void InitDateArray(MultiCharts* multiCharts, int size);
 extern "C" void SetDateArray(MultiCharts* multiCharts, char* dateArray);
