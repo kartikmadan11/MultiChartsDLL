@@ -6,7 +6,7 @@
 	#define MULTICHARTSMACRO __declspec(dllimport)
 #endif
 
-constexpr auto DATE_SIZE = 11;
+constexpr auto DATE_SIZE = 10;
 
 extern "C" class MULTICHARTSMACRO MultiCharts
 {
@@ -16,10 +16,10 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 	double* testingData;
 	int testingDataSize;
 
-	char (*dateArray)[DATE_SIZE];
+	char (*dateArray)[DATE_SIZE + 1];
 	int dateArraySize;
 
-	char (*testDateArray)[DATE_SIZE];
+	char (*testDateArray)[DATE_SIZE + 1];
 	int testDateArraySize;
 
 	long* volumeArray;
