@@ -1,12 +1,12 @@
 #pragma once
 
 #ifdef MULTICHARTSDLL_EXPORTS
-	#define MULTICHARTSMACRO __declspec(dllexport)
+#define MULTICHARTSMACRO __declspec(dllexport)
 #else
-	#define MULTICHARTSMACRO __declspec(dllimport)
+#define MULTICHARTSMACRO __declspec(dllimport)
 #endif
 
-constexpr auto DATE_SIZE = 10;
+constexpr auto DATE_SIZE = 11;
 
 extern "C" class MULTICHARTSMACRO MultiCharts
 {
@@ -16,15 +16,15 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 	double* testingData;
 	int testingDataSize;
 
-	char (*dateArray)[DATE_SIZE + 1];
+	char(*dateArray)[DATE_SIZE];
 	int dateArraySize;
 
-	char (*testDateArray)[DATE_SIZE + 1];
+	char(*testDateArray)[DATE_SIZE];
 	int testDateArraySize;
 
 	long* volumeArray;
 	int volumeArraySize;
-	
+
 	char* fileName;
 	int fileNameSize;
 
@@ -36,41 +36,41 @@ extern "C" class MULTICHARTSMACRO MultiCharts
 	double testingPart;
 	double testingWeight;
 
-	public:
+public:
 
-		MultiCharts();
-		~MultiCharts();
-		void DisposeMultiCharts();
+	MultiCharts();
+	~MultiCharts();
+	void DisposeMultiCharts();
 
-		void InitTrainingData(int size);
-		void SetTrainingData(double* trainingData);
+	void InitTrainingData(int size);
+	void SetTrainingData(double* trainingData);
 
-		void InitTestingData(int size);
-		void SetTestingData(double* testingData);
+	void InitTestingData(int size);
+	void SetTestingData(double* testingData);
 
-		void InitDateArray(int size);
-		void SetDateArray(char *dateArray);
+	void InitDateArray(int size);
+	void SetDateArray(char *dateArray);
 
-		void InitTestDateArray(int size);
-		void SetTestDateArray(char *testDateArray);
+	void InitTestDateArray(int size);
+	void SetTestDateArray(char *testDateArray);
 
-		void InitVolumeArray(int size);
-		void SetVolumeArray(long* volume);
+	void InitVolumeArray(int size);
+	void SetVolumeArray(long* volume);
 
-		void InitFileName(int size);
-		void SetFileName(char* fileName);
+	void InitFileName(int size);
+	void SetFileName(char* fileName);
 
-		void SetLearningRate(double learningRate);
-		void SetEpochs(int epochs);
-		void SetScale(int scale);
-		void SetOptimizer(int optimizer);
-		void SetMomentum(int momentum);
-		void SetTestingPart(double testingPart);
-		void SetTestingWeight(double testingWeight);
+	void SetLearningRate(double learningRate);
+	void SetEpochs(int epochs);
+	void SetScale(int scale);
+	void SetOptimizer(int optimizer);
+	void SetMomentum(int momentum);
+	void SetTestingPart(double testingPart);
+	void SetTestingWeight(double testingWeight);
 
-		double TrainModel();
-		double TestModel();
-		double* Predict();
+	double TrainModel();
+	double TestModel();
+	double* Predict();
 };
 
 /*
