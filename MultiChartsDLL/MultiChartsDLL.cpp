@@ -58,10 +58,11 @@ void MultiCharts::DisposeMultiCharts()
 		delete[] volumeArray;
 		volumeArray = NULL;
 	}
-	/*if (this != NULL)
+
+	if (this != NULL)
 	{
 		delete this;
-	}*/
+	}
 }
 
 void MultiCharts::InitTrainingData(int size)
@@ -72,7 +73,13 @@ void MultiCharts::InitTrainingData(int size)
 
 void MultiCharts::SetTrainingData(double* trainingData)
 {
-	this->trainingData = trainingData;
+	//this->trainingData = trainingData;
+	for (int i = 0; i < trainingDataSize; i++)
+	{
+		this->trainingData[i] = trainingData[i];
+	}
+	//delete trainingData;
+	//trainingData = NULL;
 }
 
 void MultiCharts::InitTestingData(int size)
@@ -82,8 +89,13 @@ void MultiCharts::InitTestingData(int size)
 }
 
 void MultiCharts::SetTestingData(double * testingData)
-{
-	this->testingData = testingData;
+{	
+	for (int i = 0; i < testingDataSize; i++)
+	{
+		this->testingData[i] = testingData[i];
+	}
+	//delete testingData;
+	//testingData = NULL;
 }
 
 void MultiCharts::InitDateArray(int size)
@@ -102,6 +114,8 @@ void MultiCharts::SetDateArray(char *dateArray)
 		}
 		this->dateArray[i][DATE_SIZE - 1] = '\0';
 	}
+	//delete dateArray;
+	//dateArray = NULL;
 }
 
 void MultiCharts::InitTestDateArray(int size)
@@ -120,16 +134,21 @@ void MultiCharts::SetTestDateArray(char *testDateArray)
 		}
 		this->testDateArray[i][DATE_SIZE - 1] = '\0';
 	}
+	//delete testDateArray;
+	//testDateArray = NULL;
 }
 
 void MultiCharts::InitVolumeArray(int size)
 {
+	this->volumeArraySize = size;
 	this->volumeArray = new long[size];
 }
 
 void MultiCharts::SetVolumeArray(long* volume)
 {
 	this->volumeArray = volume;
+	//delete[] volume;
+	//volume = NULL;
 }
 
 void MultiCharts::InitFileName(int size)
@@ -183,7 +202,7 @@ void MultiCharts::SetTestingWeight(double testingWeight)
 }
 
 double MultiCharts::TrainModel()
-{
+{	
 	if ((bool)Py_IsInitialized())
 	{
 		Py_FinalizeEx();
@@ -267,12 +286,14 @@ double MultiCharts::TrainModel()
 					pValue.Release();
 					pModule.Release();
 					PyGILState_Release(gstate);
+					pyInstance.~CPyInstance();
 					return returnVal;
 				}
 				else
 				{
 					pModule.Release();
 					PyGILState_Release(gstate);
+					pyInstance.~CPyInstance();
 					return 1.01;
 				}
 			}
@@ -289,6 +310,7 @@ double MultiCharts::TrainModel()
 				pFunc.Release();
 				pModule.Release();
 				PyGILState_Release(gstate);
+				pyInstance.~CPyInstance();
 				return 2.01;
 			}
 		}
@@ -454,7 +476,7 @@ double* MultiCharts::Predict()
 				{
 					if (PyList_Check(pValue))
 					{
-						int count = PyList_Size(pValue);
+						Py_ssize_t count = PyList_Size(pValue);
 						double* predictions = new double[count];
 						CPyObject pTemp;
 
@@ -463,7 +485,6 @@ double* MultiCharts::Predict()
 							pTemp = PyList_GetItem(pValue, i);
 							predictions[i] = (double)strtod(PyUnicode_AsUTF8(pTemp), NULL);
 						}
-
 						return predictions;
 					}
 					else
