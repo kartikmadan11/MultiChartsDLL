@@ -6,6 +6,7 @@
 #include "MultiChartsDLL.h"
 #include "pyhelper.hpp"
 #include "string"
+#include "pybind11.h"
 
 MultiCharts::MultiCharts() { }
 
