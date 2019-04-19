@@ -15,7 +15,6 @@ public:
 	~CPyInstance()
 	{
 		Py_Finalize();
-		Py_FinalizeEx();
 	}
 };
 
@@ -34,7 +33,7 @@ public:
 
 	~CPyObject()
 	{
-		Release();
+		//Release();
 	}
 
 	PyObject* getObject()

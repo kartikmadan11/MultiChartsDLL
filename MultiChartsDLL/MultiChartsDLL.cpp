@@ -40,11 +40,13 @@ void MultiCharts::DisposeMultiCharts()
 	if (testingData != NULL)
 	{
 		delete[] testingData;
+		testingData = NULL;
 	}
 
 	if (testDateArray != NULL)
 	{
 		delete[] testDateArray;
+		testDateArray = NULL;
 	}
 
 	if (fileName != NULL)
@@ -71,7 +73,7 @@ void MultiCharts::InitTrainingData(int size)
 	this->trainingData = new double[size];
 }
 
-void MultiCharts::SetTrainingData(double* trainingData)
+void MultiCharts::SetTrainingData(double *trainingData)
 {
 	//this->trainingData = trainingData;
 	for (int i = 0; i < trainingDataSize; i++)
@@ -79,7 +81,7 @@ void MultiCharts::SetTrainingData(double* trainingData)
 		this->trainingData[i] = trainingData[i];
 	}
 	//delete trainingData;
-	//trainingData = NULL;
+	trainingData = NULL;
 }
 
 void MultiCharts::InitTestingData(int size)
@@ -88,14 +90,14 @@ void MultiCharts::InitTestingData(int size)
 	this->testingData = new double[size];
 }
 
-void MultiCharts::SetTestingData(double * testingData)
+void MultiCharts::SetTestingData(double *testingData)
 {	
 	for (int i = 0; i < testingDataSize; i++)
 	{
 		this->testingData[i] = testingData[i];
 	}
 	//delete testingData;
-	//testingData = NULL;
+	testingData = NULL;
 }
 
 void MultiCharts::InitDateArray(int size)
@@ -115,7 +117,7 @@ void MultiCharts::SetDateArray(char *dateArray)
 		this->dateArray[i][DATE_SIZE - 1] = '\0';
 	}
 	//delete dateArray;
-	//dateArray = NULL;
+	dateArray = NULL;
 }
 
 void MultiCharts::InitTestDateArray(int size)
@@ -135,7 +137,7 @@ void MultiCharts::SetTestDateArray(char *testDateArray)
 		this->testDateArray[i][DATE_SIZE - 1] = '\0';
 	}
 	//delete testDateArray;
-	//testDateArray = NULL;
+	testDateArray = NULL;
 }
 
 void MultiCharts::InitVolumeArray(int size)
@@ -203,22 +205,18 @@ void MultiCharts::SetTestingWeight(double testingWeight)
 
 double MultiCharts::TrainModel()
 {	
-	if ((bool)Py_IsInitialized())
+	if (Py_IsInitialized())
 	{
-		Py_FinalizeEx();
+		Py_Finalize();
 	}
 
-	// Creating a Python Instance
-	CPyInstance pyInstance;
-
-	PyGILState_STATE gstate = PyGILState_Ensure();
-
-	//PyThreadState *_save;
-	//_save = PyEval_SaveThread();
-	//PyEval_RestoreThread(_save);
+	CPyInstance pyInstance; // Creating a Python Instance
 
 	// Importing the .py module
 	CPyObject pModule = PyImport_ImportModule("build");
+
+	PyGILState_STATE gstate = PyGILState_Ensure();
+	
 	if (pModule)
 	{
 		// Importing the Train Function
@@ -286,14 +284,12 @@ double MultiCharts::TrainModel()
 					pValue.Release();
 					pModule.Release();
 					PyGILState_Release(gstate);
-					pyInstance.~CPyInstance();
 					return returnVal;
 				}
 				else
 				{
 					pModule.Release();
 					PyGILState_Release(gstate);
-					pyInstance.~CPyInstance();
 					return 1.01;
 				}
 			}
@@ -310,7 +306,6 @@ double MultiCharts::TrainModel()
 				pFunc.Release();
 				pModule.Release();
 				PyGILState_Release(gstate);
-				pyInstance.~CPyInstance();
 				return 2.01;
 			}
 		}
@@ -332,19 +327,19 @@ double MultiCharts::TrainModel()
 
 double MultiCharts::TestModel()
 {
-	if ((bool)Py_IsInitialized())
+	if (Py_IsInitialized())
 	{
-		Py_FinalizeEx();
+		Py_Finalize();
 	}
 
-	// Creating a Python Instance
-	CPyInstance pyInstance;
+	CPyInstance pyInstance; // Creating a Python Instance
 
-	PyGILState_STATE gstate;
-	gstate = PyGILState_Ensure();
+	PyGILState_STATE gstate = PyGILState_Ensure();
 
 	// Importing the .py module
 	CPyObject pModule = PyImport_ImportModule("build");
+
+	//PyThreadState* state =  PyEval_SaveThread();
 
 	if (pModule)
 	{
@@ -364,7 +359,7 @@ double MultiCharts::TestModel()
 				char* dateAtPosI = new char[DATE_SIZE];
 				for (int j = 0; j < DATE_SIZE - 1; j++)
 				{
-					dateAtPosI[j] = dateArray[i][j];
+					dateAtPosI[j] = testDateArray[i][j];
 				}
 				dateAtPosI[DATE_SIZE - 1] = '\0';
 				std::string date(dateAtPosI);
