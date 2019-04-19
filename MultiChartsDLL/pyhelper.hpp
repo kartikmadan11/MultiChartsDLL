@@ -49,7 +49,7 @@ public:
 
 	PyObject* AddRef()
 	{
-		if (p)
+		if (p != NULL)
 		{
 			Py_INCREF(p);
 		}
@@ -58,7 +58,7 @@ public:
 
 	void Release()
 	{
-		if (p)
+		if (p != NULL)
 		{
 			Py_DECREF(p);
 		}
@@ -92,6 +92,5 @@ public:
 		return p ? true : false;
 	}
 };
-
 
 #endif
