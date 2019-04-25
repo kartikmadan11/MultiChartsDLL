@@ -1,14 +1,18 @@
 // MultiChartsDLL.cpp : Defines the exported functions for the DLL application.
 //
 
-#include "Python.h"
 #include "stdafx.h"
+#undef min
+#undef max
 #include "MultiChartsDLL.h"
 #include "pyhelper.hpp"
 #include "string"
+#include "embed.h"
 #include "pybind11.h"
 
-MultiCharts::MultiCharts() { }
+namespace py = pybind11;
+
+MultiCharts::MultiCharts() {}
 
 MultiCharts::~MultiCharts() { }
 
@@ -204,131 +208,11 @@ void MultiCharts::SetTestingWeight(double testingWeight)
 
 double MultiCharts::TrainModel()
 {	
-	if ((bool)Py_IsInitialized())
-	{
-		Py_FinalizeEx();
-	}
-
-	// Creating a Python Instance
-	CPyInstance pyInstance;
-
-	PyGILState_STATE gstate = PyGILState_Ensure();
-
-	//PyThreadState *_save;
-	//_save = PyEval_SaveThread();
-	//PyEval_RestoreThread(_save);
-
-	// Importing the .py module
-	CPyObject pModule = PyImport_ImportModule("build");
-	if (pModule)
-	{
-		// Importing the Train Function
-		CPyObject pFunc = PyObject_GetAttrString(pModule, "train");
-
-		if (pFunc && PyCallable_Check(pFunc))
-		{
-			// Creating PyObjects Parameters for Train Function
-
-			//Python Lists for Training Data Values and Dates
-			CPyObject pTrainingData = PyList_New(0);
-			CPyObject pDate = PyList_New(0);
-
-			for (int i = 0; i < trainingDataSize; i++)
-			{
-				char* dateAtPosI = new char[DATE_SIZE];
-				for (int j = 0; j < DATE_SIZE - 1; j++)
-				{
-					dateAtPosI[j] = dateArray[i][j];
-				}
-				dateAtPosI[DATE_SIZE - 1] = '\0';
-				std::string date(dateAtPosI);
-				const char* c = date.c_str();
-				delete[] dateAtPosI;
-
-				CPyObject pTrainEle = PyFloat_FromDouble(trainingData[i]);
-				CPyObject pDateEle = PyUnicode_FromFormat("%s", c);
-
-				PyList_Append(pTrainingData, pTrainEle);
-				PyList_Append(pDate, pDateEle);
-
-				pTrainEle.Release();
-				pDateEle.Release();
-			}
-
-			std::string fileNameString(fileName, fileNameSize);
-			const char* d = fileNameString.c_str();
-
-			CPyObject pLearningRate = PyFloat_FromDouble(learningRate);
-			CPyObject pScale = Py_BuildValue("i", scale);
-			CPyObject pEpochs = Py_BuildValue("i", epochs);
-			CPyObject pMomentum = Py_BuildValue("i", momentum);
-			CPyObject pOptimizer = Py_BuildValue("i", optimizer);
-			CPyObject pFileName = PyUnicode_FromFormat("%s", d);
-
-			if (pTrainingData && pDate && pLearningRate && pScale && pEpochs && pMomentum && pOptimizer && pFileName)
-			{
-				// Receiving return value from the Train Function
-				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, pLearningRate, pScale, pEpochs, pMomentum, pOptimizer, pFileName, NULL);
-
-				// Decreasing Reference counts for Function and Parameter Objects
-				pTrainingData.Release();
-				pDate.Release();
-				pLearningRate.Release();
-				pScale.Release();
-				pEpochs.Release();
-				pMomentum.Release();
-				pOptimizer.Release();
-				pFileName.Release();
-				pFunc.Release();
-
-				if (pValue)
-				{
-					double returnVal = PyFloat_AsDouble(pValue);
-					pValue.Release();
-					pModule.Release();
-					PyGILState_Release(gstate);
-					pyInstance.~CPyInstance();
-					return returnVal;
-				}
-				else
-				{
-					pModule.Release();
-					PyGILState_Release(gstate);
-					pyInstance.~CPyInstance();
-					return 1.01;
-				}
-			}
-			else
-			{
-				pTrainingData.Release();
-				pDate.Release();
-				pLearningRate.Release();
-				pScale.Release();
-				pEpochs.Release();
-				pMomentum.Release();
-				pOptimizer.Release();
-				pFileName.Release();
-				pFunc.Release();
-				pModule.Release();
-				PyGILState_Release(gstate);
-				pyInstance.~CPyInstance();
-				return 2.01;
-			}
-		}
-		else
-		{
-			pFunc.Release();
-			pModule.Release();
-			PyGILState_Release(gstate);
-			return 3.01;
-		}
-	}
-	else
-	{
-		pModule.Release();
-		PyGILState_Release(gstate);
-		return 4.01;
-	}
+	py::scoped_interpreter guard{}; // start the interpreter and keep it alive
+	auto build = py::module::import("build");
+	auto sum = build.attr("sqrt")(5);
+	double n = sum.cast<double>();
+	return n;
 }
 
 double MultiCharts::TestModel()
