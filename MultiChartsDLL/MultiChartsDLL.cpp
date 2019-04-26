@@ -210,7 +210,8 @@ double MultiCharts::TrainModel()
 		Py_Finalize();
 	}
 
-	CPyInstance pyInstance; // Creating a Python Instance
+	// Creating a Python Instance
+	CPyInstance pyInstance; 
 
 	// Importing the .py module
 	CPyObject pModule = PyImport_ImportModule("build");
@@ -305,7 +306,7 @@ double MultiCharts::TestModel()
 	CPyInstance pyInstance; // Creating a Python Instance
 
 	// Importing the .py module
-	CPyObject pModule = PyImport_ImportModule("build");
+ 	CPyObject pModule = PyImport_ImportModule("build");
 
 	PyGILState_STATE gstate = PyGILState_Ensure();
 	//PyThreadState* state =  PyEval_SaveThread();
