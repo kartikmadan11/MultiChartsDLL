@@ -297,8 +297,7 @@ double MultiCharts::TestModel()
  	CPyObject pModule = PyImport_ImportModule("build");
 
 	PyGILState_STATE gstate = PyGILState_Ensure();
-	//PyThreadState* state =  PyEval_SaveThread();
-
+	
 	if (pModule)
 	{
 		// Importing the Test Function
@@ -373,13 +372,12 @@ double MultiCharts::TestModel()
 	}
 }
 
-double* MultiCharts::Predict()
+double* MultiCharts::Predict(int ticks)
 {
-	// Creating a Python Instance
-	CPyInstance pyInstance;
-
 	// Importing the .py module
 	CPyObject pModule = PyImport_ImportModule("build");
+
+	PyGILState_STATE gstate = PyGILState_Ensure();
 
 	if (pModule)
 	{
@@ -400,10 +398,6 @@ double* MultiCharts::Predict()
 				// Receiving return value from the Train Function
 				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pFileName, NULL);
 
-				// Releasing Function and Parameter Objects
-				pFunc.Release();
-				pFileName.Release();
-
 				if (pValue)
 				{
 					if (PyList_Check(pValue))
@@ -417,6 +411,8 @@ double* MultiCharts::Predict()
 							pTemp = PyList_GetItem(pValue, i);
 							predictions[i] = (double)strtod(PyUnicode_AsUTF8(pTemp), NULL);
 						}
+
+						PyGILState_Release(gstate);
 						return predictions;
 					}
 					else
@@ -619,11 +615,11 @@ double TestModel(MultiCharts* multiCharts)
 	return 10.2;
 }
 
-double* Predict(MultiCharts* multiCharts)
+double* Predict(MultiCharts* multiCharts, int ticks)
 {
 	if (multiCharts != NULL)
 	{
-		return multiCharts->Predict();
+		return multiCharts->Predict(ticks);
 	}
 	return NULL;
 }

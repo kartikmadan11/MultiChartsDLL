@@ -70,7 +70,7 @@ public:
 
 	double TrainModel();
 	double TestModel();
-	double* Predict();
+	double* Predict(int ticks);
 };
 
 /*
@@ -106,4 +106,4 @@ extern "C" void SetMomentum(MultiCharts* multiCharts, int momentum);
 
 extern "C" double TrainModel(MultiCharts* multiCharts);
 extern "C" double TestModel(MultiCharts* multiCharts);
-extern "C" double* Predict(MultiCharts* multiCharts);
+extern "C" double* Predict(MultiCharts* multiCharts, int ticks);
