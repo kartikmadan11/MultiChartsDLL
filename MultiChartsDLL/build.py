@@ -163,11 +163,10 @@ def test(testing_set, date, testing_weight ,file_name):
         predicted_stock_price = regressor.predict(X_test)
         predicted_stock_price = scaler.inverse_transform(predicted_stock_price)
 
-        save_plot(test_set, predicted_stock_price, file_name)
-        
+        eval = regressor.evaluate(X_test, predicted_stock_price)[1]
         del regressor
         
-        return regressor.evaluate(X_test, predicted_stock_price)[1]
+        return eval
     else:
         return -1
 
@@ -196,6 +195,6 @@ def predict(file_name, ticks):
         predicted_stock_price = regressor.predict(X_pred)
         predicted_stock_price = scaler.inverse_transform(predicted_stock_price)
         
-        return predicted_stock_price
+        return predicted_stock_price.reshape(predicted_stock_price.shape[0]).tolist()
     else:
         return -1     
