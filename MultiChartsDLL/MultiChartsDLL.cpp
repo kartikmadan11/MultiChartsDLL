@@ -7,6 +7,9 @@
 #include "pyhelper.hpp"
 #include "string"
 
+// Creating a Python Instance
+CPyInstance pyInstance;
+
 MultiCharts::MultiCharts() { }
 
 MultiCharts::~MultiCharts() { }
@@ -205,14 +208,6 @@ void MultiCharts::SetTestingWeight(double testingWeight)
 
 double MultiCharts::TrainModel()
 {	
-	if (Py_IsInitialized())
-	{
-		Py_Finalize();
-	}
-
-	// Creating a Python Instance
-	CPyInstance pyInstance; 
-
 	// Importing the .py module
 	CPyObject pModule = PyImport_ImportModule("build");
 
@@ -298,13 +293,6 @@ double MultiCharts::TrainModel()
 
 double MultiCharts::TestModel()
 {
-	if (Py_IsInitialized())
-	{
-		Py_Finalize();
-	}
-
-	CPyInstance pyInstance; // Creating a Python Instance
-
 	// Importing the .py module
  	CPyObject pModule = PyImport_ImportModule("build");
 
