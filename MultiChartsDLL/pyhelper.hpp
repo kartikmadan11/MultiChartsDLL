@@ -33,7 +33,7 @@ public:
 
 	~CPyObject()
 	{
-		//Release();
+		Release();
 	}
 
 	PyObject* getObject()

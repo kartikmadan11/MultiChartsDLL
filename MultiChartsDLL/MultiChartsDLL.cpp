@@ -247,9 +247,6 @@ double MultiCharts::TrainModel()
 
 				PyList_Append(pTrainingData, pTrainEle);
 				PyList_Append(pDate, pDateEle);
-
-				pTrainEle.Release();
-				pDateEle.Release();
 			}
 
 			std::string fileNameString(fileName, fileNameSize);
@@ -267,59 +264,32 @@ double MultiCharts::TrainModel()
 				// Receiving return value from the Train Function
 				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTrainingData, pDate, pLearningRate, pScale, pEpochs, pMomentum, pOptimizer, pFileName, NULL);
 
-				// Decreasing Reference counts for Function and Parameter Objects
-				pTrainingData.Release();
-				pDate.Release();
-				pLearningRate.Release();
-				pScale.Release();
-				pEpochs.Release();
-				pMomentum.Release();
-				pOptimizer.Release();
-				pFileName.Release();
-				pFunc.Release();
-
 				if (pValue)
 				{
 					double returnVal = PyFloat_AsDouble(pValue);
-					pValue.Release();
-					pModule.Release();
 					PyGILState_Release(gstate);
 					return returnVal;
 				}
 				else
 				{
-					pModule.Release();
 					PyGILState_Release(gstate);
 					return 1.01;
 				}
 			}
 			else
 			{
-				pTrainingData.Release();
-				pDate.Release();
-				pLearningRate.Release();
-				pScale.Release();
-				pEpochs.Release();
-				pMomentum.Release();
-				pOptimizer.Release();
-				pFileName.Release();
-				pFunc.Release();
-				pModule.Release();
 				PyGILState_Release(gstate);
 				return 2.01;
 			}
 		}
 		else
 		{
-			pFunc.Release();
-			pModule.Release();
 			PyGILState_Release(gstate);
 			return 3.01;
 		}
 	}
 	else
 	{
-		pModule.Release();
 		PyGILState_Release(gstate);
 		return 4.01;
 	}
@@ -334,11 +304,10 @@ double MultiCharts::TestModel()
 
 	CPyInstance pyInstance; // Creating a Python Instance
 
-	PyGILState_STATE gstate = PyGILState_Ensure();
-
 	// Importing the .py module
 	CPyObject pModule = PyImport_ImportModule("build");
 
+	PyGILState_STATE gstate = PyGILState_Ensure();
 	//PyThreadState* state =  PyEval_SaveThread();
 
 	if (pModule)
@@ -371,9 +340,6 @@ double MultiCharts::TestModel()
 
 				PyList_Append(pTestingData, pTestEle);
 				PyList_Append(pDate, pDateEle);
-
-				pTestEle.Release();
-				pDateEle.Release();
 			}
 
 			std::string fileNameString(fileName, fileNameSize);
@@ -387,50 +353,32 @@ double MultiCharts::TestModel()
 				// Receiving return value from the Test Function
 				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pTestingData, pDate, pTestingWeight, pFileName, NULL);
 
-				// Decreasing reference count of Function and Parameter Objects
-				pTestingData.Release();
-				pDate.Release();
-				pTestingWeight.Release();
-				pFileName.Release();
-				pFunc.Release();
-
 				if (pValue)
 				{
 					double returnVal = PyFloat_AsDouble(pValue);
 					PyGILState_Release(gstate);
-					pModule.Release();
 					return returnVal;
 				}
 				else
 				{
-					pModule.Release();
 					PyGILState_Release(gstate);
 					return 0.01;
 				}
 			}
 			else
 			{
-				pTestingData.Release();
-				pDate.Release();
-				pTestingWeight.Release();
-				pFileName.Release();
-				pFunc.Release();
-				pModule.Release();
 				PyGILState_Release(gstate);
 				return 0.02;
 			}
 		}
 		else
 		{
-			pFunc.Release();
-			pModule.Release();
 			PyGILState_Release(gstate);
 			return 0.03;
 		}
 	}
 	else
 	{
-		pModule.Release();
 		PyGILState_Release(gstate);
 		return 0.04;
 	}
