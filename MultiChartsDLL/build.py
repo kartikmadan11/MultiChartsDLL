@@ -171,12 +171,31 @@ def test(testing_set, date, testing_weight ,file_name):
     else:
         return -1
 
-def predict(file_name):
-    if(type(X) == list):
-
-        dataset = pd.read_csv(file_name + '.csv', index_col='Date', parse_dates=['Date'])
-
-        regressor = load_model(file_name + '.h5')
+def predict(file_name, ticks):
+    if(ticks < window_size):
+        
+        prev_dataset = pd.read_csv(file_name + '.csv', index_col = 'Date', parse_dates=['Date'])
+        
+        regressor = load_model(file_name + '.h5', custom_objects={'r2_score':r2_score})
 
         file = open(file_name + '_scaler.pickle', 'rb')
-        scaler = pickle.load(file)        
+        scaler = pickle.load(file)
+        file.close()
+
+        inputs = prev_dataset[len(prev_dataset) - ticks - window_size:]['Feature'].values
+        inputs = inputs.reshape(-1,1)
+        inputs  = scaler.transform(inputs)
+        
+        # Preparing X_pred and predicting the prices
+        X_pred = []
+        for i in range(window_size, inputs.shape[0]):
+            X_pred.append(inputs[i - window_size:i,0])
+        X_pred = np.array(X_pred)
+        X_pred = np.reshape(X_pred, (X_pred.shape[0],X_pred.shape[1],1))
+        
+        predicted_stock_price = regressor.predict(X_pred)
+        predicted_stock_price = scaler.inverse_transform(predicted_stock_price)
+        
+        return predicted_stock_price
+    else:
+        return -1     
