@@ -7,6 +7,7 @@
 #include "pyhelper.hpp"
 #include "string"
 
+using namespace std;
 // Creating a Python Instance
 CPyInstance pyInstance;
 
@@ -222,7 +223,7 @@ double MultiCharts::TrainModel()
 		{
 			// Creating PyObjects Parameters for Train Function
 
-			//Python Lists for Training Data Values and Dates
+			// Python Lists for Training Data Values and Dates
 			CPyObject pTrainingData = PyList_New(0);
 			CPyObject pDate = PyList_New(0);
 
@@ -392,27 +393,31 @@ double* MultiCharts::Predict(int ticks)
 			const char* d = fileNameString.c_str();
 
 			CPyObject pFileName = PyUnicode_FromFormat("%s", d);
+			CPyObject pTicks = Py_BuildValue("i", ticks);
 
-			if (pFileName)
+			if (pFileName && pTicks)
 			{
-				// Receiving return value from the Train Function
-				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pFileName, NULL);
+				// Receiving return value from the Predict Function
+				CPyObject pValue = PyObject_CallFunctionObjArgs(pFunc, pFileName, pTicks, NULL);
 
 				if (pValue)
 				{
 					if (PyList_Check(pValue))
 					{
-						Py_ssize_t count = PyList_Size(pValue);
+						int count = (int)PyList_Size(pValue);
+
 						double* predictions = new double[count];
 						CPyObject pTemp;
 
 						for (int i = 0; i < count; i++)
 						{
 							pTemp = PyList_GetItem(pValue, i);
-							predictions[i] = (double)strtod(PyUnicode_AsUTF8(pTemp), NULL);
+							predictions[i] = PyFloat_AsDouble(pTemp);
 						}
 
 						PyGILState_Release(gstate);
+						
+						//double* predictions = new double[ticks]{ 1.1, 2.01, 3.22, 4.1, 5.09 };
 						return predictions;
 					}
 					else
