@@ -128,7 +128,7 @@ def train(training_set, date, lr, scale, epochs, momentum, optimizer, file_name)
     else:
         return 110
 
-def test(testing_set, date, testing_weight ,file_name):
+def test(testing_set, date, testing_weight, file_name):
     if(type(testing_set) == list):
 
         # Constructing a pandas dataframe for reusability and reference
@@ -195,6 +195,8 @@ def predict(file_name, ticks):
         predicted_stock_price = regressor.predict(X_pred)
         predicted_stock_price = scaler.inverse_transform(predicted_stock_price)
         
+        del regressor
+
         return predicted_stock_price.reshape(predicted_stock_price.shape[0]).tolist()
     else:
         return -1     
