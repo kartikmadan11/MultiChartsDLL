@@ -486,7 +486,7 @@ void InitDateArray(MultiCharts* multiCharts, int size)
 {
 	if (multiCharts != NULL)
 	{
-		multiCharts->InitTrainingData(size);
+		multiCharts->InitDateArray(size);
 	}
 }
 
@@ -534,7 +534,7 @@ void InitVolumeArray(MultiCharts* multiCharts, int size)
 {
 	if (multiCharts != NULL)
 	{
-		multiCharts->InitTrainingData(size);
+		multiCharts->InitVolumeArray(size);
 	}
 }
 
@@ -550,7 +550,7 @@ void InitFileName(MultiCharts* multiCharts, int size)
 {
 	if (multiCharts != NULL)
 	{
-		multiCharts->InitTrainingData(size);
+		multiCharts->InitFileName(size);
 	}
 }
 
