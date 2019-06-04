@@ -10,7 +10,6 @@
 using namespace std;
 // Creating a Python Instance
 CPyInstance pyInstance;
-
 MultiCharts::MultiCharts() { }
 
 MultiCharts::~MultiCharts() { }
@@ -241,7 +240,7 @@ double MultiCharts::TrainModel()
 
 				CPyObject pTrainEle = PyFloat_FromDouble(trainingData[i]);
 				CPyObject pDateEle = PyUnicode_FromFormat("%s", c);
-
+				 
 				PyList_Append(pTrainingData, pTrainEle);
 				PyList_Append(pDate, pDateEle);
 			}
