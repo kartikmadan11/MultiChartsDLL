@@ -5,6 +5,8 @@ import pandas as pd
 import tensorflow as tf
 import pickle
 
+from datetime import datetime
+
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM, Dropout, GRU, Bidirectional
 from tensorflow.keras.optimizers import SGD, RMSprop
@@ -94,11 +96,14 @@ def r2_score(y_true, y_pred):
     SS_tot = K.sum(K.square(y_true - K.mean(y_true))) 
     return ( 1 - SS_res/(SS_tot + K.epsilon()) )
     
-def train(training_set, date, lr, scale, epochs, momentum, optimizer, file_name):
+def train(training_set, unix_date, lr, scale, epochs, momentum, optimizer, file_name):
     if(type(training_set) == list):
         
+        #Converting unix dates to DateTime
+        date = [datetime.fromtimestamp(unix) for unix in unix_date]
+        
         # Constructing a pandas dataframe for reusability and reference
-        df = pd.DataFrame(data = training_set, columns = ['Feature'], index = date)
+        df = pd.DataFrame(data = training_set, columns = ['Feature'], index = pd.to_datetime(date))
         df.index.names = ['Date']
         df.index = pd.to_datetime(df.index)
         df.to_csv(file_name + '.csv')
@@ -163,6 +168,8 @@ def test(testing_set, date, testing_weight, file_name):
         predicted_stock_price = regressor.predict(X_test)
         predicted_stock_price = scaler.inverse_transform(predicted_stock_price)
 
+        save_plot(test_set, predicted_stock_price, file_name)
+        
         eval = regressor.evaluate(X_test, predicted_stock_price)[1]
         del regressor
         
@@ -195,8 +202,6 @@ def predict(file_name, ticks):
         predicted_stock_price = regressor.predict(X_pred)
         predicted_stock_price = scaler.inverse_transform(predicted_stock_price)
         
-        del regressor
-
         return predicted_stock_price.reshape(predicted_stock_price.shape[0]).tolist()
     else:
         return -1     
